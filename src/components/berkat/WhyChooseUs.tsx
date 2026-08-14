@@ -11,6 +11,7 @@ import {
   ThumbsUp,
   Wrench,
   Users,
+  Zap,
 } from 'lucide-react';
 
 const features = [
@@ -18,49 +19,49 @@ const features = [
     icon: Shield,
     title: 'Garansi Resmi',
     desc: 'Semua produk bergaransi resmi dari brand ternama dengan jaminan kualitas.',
-    color: 'bg-teal-100 text-teal-700',
+    color: 'bg-teal-100 text-teal-800',
   },
   {
     icon: Truck,
     title: 'Pengiriman Se-Indonesia',
     desc: 'Jaringan logistik luas memastikan pesanan sampai aman dan tepat waktu.',
-    color: 'bg-blue-100 text-blue-700',
+    color: 'bg-sky-100 text-sky-800',
   },
   {
     icon: Clock,
     title: 'Respon 24 Jam',
     desc: 'Tim customer service siap membantu Anda kapan saja, termasuk hari libur.',
-    color: 'bg-amber-100 text-amber-700',
+    color: 'bg-amber-100 text-amber-800',
   },
   {
     icon: Headphones,
     title: 'Konsultasi Gratis',
     desc: 'Tim ahli HVAC siap memberikan konsultasi teknis untuk proyek Anda.',
-    color: 'bg-purple-100 text-purple-700',
+    color: 'bg-fuchsia-100 text-fuchsia-800',
   },
   {
     icon: Award,
     title: 'Distributor Resmi',
     desc: 'Mitra resmi brand Daikin, Panasonic, Samsung, LG, Gree, dan lainnya.',
-    color: 'bg-emerald-100 text-emerald-700',
+    color: 'bg-emerald-100 text-emerald-800',
   },
   {
     icon: ThumbsUp,
     title: 'Harga Kompetitif',
     desc: 'Harga langsung dari distributor dengan penawaran terbaik di kelasnya.',
-    color: 'bg-rose-100 text-rose-700',
+    color: 'bg-rose-100 text-rose-800',
   },
   {
     icon: Wrench,
     title: 'Layanan Instalasi',
     desc: 'Tim teknisi berpengalaman siap membantu pemasangan dan instalasi.',
-    color: 'bg-orange-100 text-orange-700',
+    color: 'bg-orange-100 text-orange-800',
   },
   {
     icon: Users,
     title: '5,000+ Klien Puas',
     desc: 'Dipercaya oleh ribuan perusahaan, hotel, rumah sakit, dan pabrik di Indonesia.',
-    color: 'bg-cyan-100 text-cyan-700',
+    color: 'bg-cyan-100 text-cyan-800',
   },
 ];
 
@@ -90,7 +91,6 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
     function step(now: number) {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       setCount(Math.round(eased * target));
       if (progress < 1) {
@@ -143,10 +143,16 @@ export function WhyChooseUs() {
           transition={{ duration: 0.6, ease: 'easeOut' }}
           className="text-center mb-14"
         >
-          <div className="inline-flex items-center gap-2 bg-teal-50 rounded-full px-4 py-1.5 mb-4">
-            <span className="w-2 h-2 bg-teal-600 rounded-full" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-4"
+          >
+            <Zap className="h-3.5 w-3.5 text-teal-700" />
             <span className="text-teal-800 text-sm font-semibold">Mengapa Berkat Mandiri?</span>
-          </div>
+          </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
             Keunggulan Kami
           </h2>
@@ -171,17 +177,18 @@ export function WhyChooseUs() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, type: 'spring', stiffness: 200, damping: 16 }}
-              className="text-center p-5 rounded-xl bg-gradient-to-br from-teal-50 to-cyan-50 border border-teal-100 hover:shadow-lg transition-shadow duration-300"
+              whileHover={{ scale: 1.04, y: -2 }}
+              className="text-center p-5 rounded-xl bg-gradient-to-br from-teal-600 to-teal-700 border border-teal-500 hover:shadow-xl hover:shadow-teal-500/20 transition-all duration-300 cursor-default"
             >
-              <div className="text-3xl lg:text-4xl font-extrabold text-teal-800">
+              <div className="text-3xl lg:text-4xl font-extrabold text-white">
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="text-sm text-gray-700 mt-1 font-medium">{stat.label}</div>
+              <div className="text-sm text-teal-100 mt-1 font-medium">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Features grid - staggered rotateX entrance */}
+        {/* Features grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -192,9 +199,9 @@ export function WhyChooseUs() {
           {features.map((feat) => (
             <motion.div key={feat.title} variants={featureVariants}>
               <motion.div
-                whileHover={{ y: -4, scale: 1.02 }}
+                whileHover={{ y: -6, scale: 1.02 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="group p-5 rounded-xl border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-colors duration-300 h-full"
+                className="group p-5 rounded-xl border border-gray-200 hover:border-teal-400 hover:shadow-xl hover:shadow-teal-500/10 transition-colors duration-300 h-full cursor-default"
               >
                 <div
                   className={`w-11 h-11 rounded-lg ${feat.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}

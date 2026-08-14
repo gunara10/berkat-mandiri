@@ -36,7 +36,7 @@ const cardVariants = {
 
 export function Testimonials({ testimonials }: Props) {
   return (
-    <section id="testimoni" className="py-16 lg:py-24 bg-gray-50/80">
+    <section id="testimoni" className="py-16 lg:py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 25 }}
@@ -45,10 +45,16 @@ export function Testimonials({ testimonials }: Props) {
           transition={{ duration: 0.6, ease: 'easeOut' }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 bg-teal-50 rounded-full px-4 py-1.5 mb-4">
-            <span className="w-2 h-2 bg-teal-600 rounded-full" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-4"
+          >
+            <Star className="h-3.5 w-3.5 text-teal-700 fill-teal-700" />
             <span className="text-teal-800 text-sm font-semibold">Testimoni Pelanggan</span>
-          </div>
+          </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
             Dipercaya <span className="text-teal-800">Ribuan Klien</span>
           </h2>
@@ -84,13 +90,13 @@ export function Testimonials({ testimonials }: Props) {
                           className={`h-4 w-4 ${
                             j < t.rating
                               ? 'fill-amber-500 text-amber-500'
-                              : 'text-gray-300'
+                              : 'fill-gray-300 text-gray-300'
                           }`}
                         />
                       ))}
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-teal flex items-center justify-center text-white font-bold text-sm">
+                      <div className="w-10 h-10 rounded-full bg-gradient-teal flex items-center justify-center text-white font-bold text-sm shrink-0">
                         {t.name.charAt(0)}
                       </div>
                       <div>

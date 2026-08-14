@@ -59,7 +59,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
-              className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 bg-white/15 border border-white/25 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm"
             >
               <span className="w-2 h-2 bg-teal-300 rounded-full animate-pulse" />
               <span className="text-white text-sm font-medium">
@@ -83,7 +83,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
-              className="text-white/85 text-base sm:text-lg leading-relaxed mb-8 max-w-xl"
+              className="text-white/90 text-base sm:text-lg leading-relaxed mb-8 max-w-xl"
             >
               Pusat penjualan AC, kompresor, refrigerant, spare part, dan
               sistem pendingin gedung dari brand-brand terkemuka dunia.
@@ -96,22 +96,26 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.45, ease: 'easeOut' }}
               className="flex flex-col sm:flex-row gap-3 mb-10"
             >
-              <Button
-                size="lg"
-                className="bg-gradient-teal hover:opacity-90 text-white shadow-xl shadow-teal-900/30 text-base px-8 h-12"
-                onClick={() => scrollTo('#produk')}
-              >
-                Lihat Katalog Produk
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 hover:text-white text-base px-8 h-12"
-                onClick={() => scrollTo('#kontak')}
-              >
-                Konsultasi Gratis
-              </Button>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Button
+                  size="lg"
+                  className="bg-white text-teal-800 hover:bg-gray-100 shadow-xl shadow-teal-900/30 text-base px-8 h-12 font-semibold"
+                  onClick={() => scrollTo('#produk')}
+                >
+                  Lihat Katalog Produk
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/40 text-white hover:bg-white/15 hover:text-white text-base px-8 h-12 font-semibold"
+                  onClick={() => scrollTo('#kontak')}
+                >
+                  Konsultasi Gratis
+                </Button>
+              </motion.div>
             </motion.div>
 
             {/* Trust badges - staggered */}
@@ -122,7 +126,7 @@ export function Hero() {
                   initial={{ opacity: 0, x: -15 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 + i * 0.1, duration: 0.5, ease: 'easeOut' }}
-                  className="flex items-center gap-2 text-white/75"
+                  className="flex items-center gap-2 text-white/90"
                 >
                   <badge.icon className="h-4 w-4 text-teal-300 shrink-0" />
                   <span className="text-xs font-medium">{badge.label}</span>
@@ -153,16 +157,11 @@ export function Hero() {
               <div className="absolute inset-0 bg-gradient-to-t from-teal-950/40 to-transparent" />
             </motion.div>
 
-            {/* Floating stat card - bottom left with spring */}
+            {/* Floating stat card - bottom left */}
             <motion.div
               initial={{ opacity: 0, x: -30, y: 20, scale: 0.8 }}
               animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-              transition={{
-                delay: 1.0,
-                type: 'spring',
-                stiffness: 200,
-                damping: 15,
-              }}
+              transition={{ delay: 1.0, type: 'spring', stiffness: 200, damping: 15 }}
               whileHover={{ scale: 1.05, y: -2 }}
               whileInView={{
                 y: [0, -6, 0],
@@ -182,16 +181,11 @@ export function Hero() {
               </div>
             </motion.div>
 
-            {/* Floating stat card - top right with spring */}
+            {/* Floating stat card - top right */}
             <motion.div
               initial={{ opacity: 0, x: 30, y: -20, scale: 0.8 }}
               animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-              transition={{
-                delay: 1.2,
-                type: 'spring',
-                stiffness: 200,
-                damping: 15,
-              }}
+              transition={{ delay: 1.2, type: 'spring', stiffness: 200, damping: 15 }}
               whileHover={{ scale: 1.05, y: -2 }}
               whileInView={{
                 y: [0, -8, 0],

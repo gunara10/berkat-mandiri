@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Snowflake, Phone, Mail, MapPin } from 'lucide-react';
+import { Snowflake, Phone, Mail, MapPin, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
@@ -57,6 +57,10 @@ export function Footer() {
     document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <footer ref={ref} className="bg-gray-900 text-gray-300">
       {/* CTA Banner */}
@@ -71,7 +75,7 @@ export function Footer() {
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
             Butuh Solusi Pendingin untuk Proyek Anda?
           </h2>
-          <p className="text-teal-100 max-w-2xl mx-auto mb-5">
+          <p className="text-teal-100 max-w-2xl mx-auto mb-5 text-lg">
             Tim ahli kami siap membantu Anda memilih produk yang tepat dengan
             penawaran harga terbaik. Konsultasi gratis!
           </p>
@@ -79,7 +83,7 @@ export function Footer() {
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
               <Button
                 size="lg"
-                className="bg-white text-teal-700 hover:bg-gray-100 shadow-lg h-12 px-8"
+                className="bg-white text-teal-800 hover:bg-gray-100 shadow-lg h-12 px-8 font-bold"
                 onClick={() => scrollTo('#kontak')}
               >
                 <motion.span
@@ -91,17 +95,20 @@ export function Footer() {
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 h-12 px-8"
-                onClick={() => {
-                  window.open('https://wa.me/6281350003423', '_blank');
-                }}
+              <a
+                href="https://wa.me/6281350003423"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <Phone className="h-4 w-4 mr-2" />
-                +62 813-5000-3423
-              </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/40 text-white hover:bg-white/15 h-12 px-8 font-semibold"
+                >
+                  <Phone className="h-4 w-4 mr-2" />
+                  +62 813-5000-3423
+                </Button>
+              </a>
             </motion.div>
           </div>
         </div>
@@ -130,35 +137,35 @@ export function Footer() {
                 </div>
               </div>
             </div>
-            <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            <p className="text-sm text-gray-400 leading-relaxed mb-4">
               Pusat penjualan AC, kompresor, refrigerant, spare part, dan
               sistem pendingin gedung terlengkap di Indonesia.
             </p>
-            <div className="space-y-2 text-xs text-gray-300">
-              <div className="flex items-start gap-2">
-                <MapPin className="h-3.5 w-3.5 mt-0.5 text-teal-300 shrink-0" />
+            <div className="space-y-2 text-xs">
+              <a href="#kontak" className="flex items-start gap-2 text-gray-400 hover:text-white transition-colors">
+                <MapPin className="h-3.5 w-3.5 mt-0.5 text-teal-400 shrink-0" />
                 <span>Jl. Raya Industri No. 88, Kawasan Industri MM2100, Bekasi 17520</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-3.5 w-3.5 text-teal-300 shrink-0" />
+              </a>
+              <a href="tel:081220030092" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                <Phone className="h-3.5 w-3.5 text-teal-400 shrink-0" />
                 <span>081220030092</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-3.5 w-3.5 text-teal-300 shrink-0" />
+              </a>
+              <a href="mailto:info@berkatmandiripendingin.com" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                <Mail className="h-3.5 w-3.5 text-teal-400 shrink-0" />
                 <span>info@berkatmandiripendingin.com</span>
-              </div>
+              </a>
             </div>
           </motion.div>
 
           {/* Quick Links */}
           <motion.div variants={itemVariants}>
             <h4 className="font-semibold text-white text-sm mb-4">Navigasi</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <button
                     onClick={() => scrollTo(link.href)}
-                    className="text-sm text-gray-300 hover:text-teal-300 transition-colors"
+                    className="text-sm text-gray-400 hover:text-teal-300 transition-colors"
                   >
                     {link.label}
                   </button>
@@ -170,12 +177,12 @@ export function Footer() {
           {/* Categories */}
           <motion.div variants={itemVariants}>
             <h4 className="font-semibold text-white text-sm mb-4">Kategori</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {categories.map((cat) => (
                 <li key={cat}>
                   <button
                     onClick={() => scrollTo('#produk')}
-                    className="text-sm text-gray-300 hover:text-teal-300 transition-colors"
+                    className="text-sm text-gray-400 hover:text-teal-300 transition-colors"
                   >
                     {cat}
                   </button>
@@ -191,7 +198,7 @@ export function Footer() {
               {brands.map((b) => (
                 <span
                   key={b}
-                  className="text-[11px] bg-gray-800 text-gray-300 px-2 py-0.5 rounded"
+                  className="text-[11px] bg-gray-800 text-gray-300 px-2 py-0.5 rounded hover:bg-gray-700 hover:text-white transition-colors cursor-default"
                 >
                   {b}
                 </span>
@@ -205,9 +212,20 @@ export function Footer() {
 
       {/* Bottom Bar */}
       <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
           <p>© {new Date().getFullYear()} Berkat Mandiri Pendingin. Hak Cipta Dilindungi.</p>
-          <p>Member resmi distributor HVAC di Indonesia</p>
+          <div className="flex items-center gap-4">
+            <p>Member resmi distributor HVAC di Indonesia</p>
+            <motion.button
+              onClick={scrollToTop}
+              whileHover={{ scale: 1.1, y: -2 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-teal-600 flex items-center justify-center text-gray-400 hover:text-white transition-all"
+              aria-label="Kembali ke atas"
+            >
+              <ArrowUp className="h-4 w-4" />
+            </motion.button>
+          </div>
         </div>
       </div>
     </footer>

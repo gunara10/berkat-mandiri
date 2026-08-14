@@ -16,7 +16,6 @@ import {
   Minus,
   Plus,
   Share2,
-  Check,
   Truck,
   Shield,
   RotateCcw,
@@ -26,6 +25,7 @@ import {
 import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
+import { NoSSR } from '@/components/ui/no-ssr';
 
 const guarantees = [
   { icon: Shield, label: 'Garansi Resmi' },
@@ -129,187 +129,189 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 scrollbar-thin">
-        <motion.div
-          variants={slideUpVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className="grid md:grid-cols-2"
-        >
-          {/* Image area */}
-          <div className="relative aspect-square bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center">
-            <span className="text-8xl opacity-20">❄️</span>
-            <div className="absolute top-3 left-3 flex flex-col gap-1">
-              {product.isNew && (
-                <Badge className="bg-emerald-500 text-white">BARU</Badge>
-              )}
-              {product.isFeatured && (
-                <Badge className="bg-amber-500 text-white flex items-center gap-1">
-                  <Sparkles className="h-3 w-3" /> UNGGULAN
-                </Badge>
-              )}
-              {discount > 0 && (
-                <Badge className="bg-red-500 text-white">HEMAT {discount}%</Badge>
-              )}
-            </div>
-          </div>
-
-          {/* Info area */}
+    <NoSSR>
+      <Dialog open={open} onOpenChange={onClose}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 scrollbar-thin">
           <motion.div
-            variants={infoVariants}
+            variants={slideUpVariants}
             initial="hidden"
             animate="visible"
-            className="p-6 flex flex-col"
+            exit="exit"
+            className="grid md:grid-cols-2"
           >
-            <DialogHeader className="mb-4">
-              <motion.div variants={infoItemVariants}>
-                {product.brand && (
-                  <span className="text-xs font-semibold text-teal-700 uppercase tracking-wider">
-                    {product.brand}
-                    {product.model && ` · ${product.model}`}
-                  </span>
+            {/* Image area */}
+            <div className="relative aspect-square bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center">
+              <span className="text-8xl opacity-20">❄️</span>
+              <div className="absolute top-3 left-3 flex flex-col gap-1">
+                {product.isNew && (
+                  <Badge className="bg-emerald-600 text-white font-semibold">BARU</Badge>
                 )}
-              </motion.div>
-              <motion.div variants={infoItemVariants}>
-                <DialogTitle className="text-xl leading-snug text-gray-900">
-                  {product.name}
-                </DialogTitle>
-              </motion.div>
-              <motion.div variants={infoItemVariants}>
-                {product.category && (
-                  <Badge variant="outline" className="w-fit text-xs text-gray-800">
-                    {product.category.name}
+                {product.isFeatured && (
+                  <Badge className="bg-amber-600 text-white font-semibold flex items-center gap-1">
+                    <Sparkles className="h-3 w-3" /> UNGGULAN
                   </Badge>
                 )}
-              </motion.div>
-            </DialogHeader>
-
-            {/* Price */}
-            <motion.div variants={infoItemVariants} className="mb-4">
-              <div className="flex items-baseline gap-3">
-                <span className="text-2xl font-extrabold text-teal-800">
-                  {formatRupiah(product.price)}
-                </span>
-                {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="text-sm text-gray-500 line-through">
-                    {formatRupiah(product.originalPrice)}
-                  </span>
+                {discount > 0 && (
+                  <Badge className="bg-red-600 text-white font-semibold">HEMAT {discount}%</Badge>
                 )}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Minimal order: {product.minOrder} {product.unit}
-              </p>
-            </motion.div>
+            </div>
 
-            {/* Description */}
-            {(product.shortDesc || product.description) && (
+            {/* Info area */}
+            <motion.div
+              variants={infoVariants}
+              initial="hidden"
+              animate="visible"
+              className="p-6 flex flex-col"
+            >
+              <DialogHeader className="mb-4">
+                <motion.div variants={infoItemVariants}>
+                  {product.brand && (
+                    <span className="text-xs font-bold text-teal-700 uppercase tracking-wider">
+                      {product.brand}
+                      {product.model && ` · ${product.model}`}
+                    </span>
+                  )}
+                </motion.div>
+                <motion.div variants={infoItemVariants}>
+                  <DialogTitle className="text-xl leading-snug text-gray-900">
+                    {product.name}
+                  </DialogTitle>
+                </motion.div>
+                <motion.div variants={infoItemVariants}>
+                  {product.category && (
+                    <Badge variant="outline" className="w-fit text-xs text-gray-800 border-gray-300 font-semibold">
+                      {product.category.name}
+                    </Badge>
+                  )}
+                </motion.div>
+              </DialogHeader>
+
+              {/* Price */}
               <motion.div variants={infoItemVariants} className="mb-4">
-                <h4 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">
-                  Deskripsi
-                </h4>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {product.description || product.shortDesc}
+                <div className="flex items-baseline gap-3">
+                  <span className="text-2xl font-extrabold text-teal-800">
+                    {formatRupiah(product.price)}
+                  </span>
+                  {product.originalPrice && product.originalPrice > product.price && (
+                    <span className="text-sm text-red-500 line-through font-medium">
+                      {formatRupiah(product.originalPrice)}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-gray-600 mt-1 font-medium">
+                  Minimal order: {product.minOrder} {product.unit}
                 </p>
               </motion.div>
-            )}
 
-            {/* Specs */}
-            {Object.keys(specs).length > 0 && (
-              <motion.div variants={infoItemVariants} className="mb-4">
-                <h4 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">
-                  Spesifikasi
-                </h4>
-                <div className="rounded-lg border overflow-hidden">
-                  {Object.entries(specs).map(([key, val], i) => (
-                    <div
-                      key={key}
-                      className={`flex justify-between text-xs px-3 py-2 ${
-                        i % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-                      }`}
-                    >
-                      <span className="text-gray-600 font-medium">{key}</span>
-                      <span className="text-gray-900">{val}</span>
-                    </div>
-                  ))}
-                </div>
+              {/* Description */}
+              {(product.shortDesc || product.description) && (
+                <motion.div variants={infoItemVariants} className="mb-4">
+                  <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                    Deskripsi
+                  </h4>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    {product.description || product.shortDesc}
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Specs */}
+              {Object.keys(specs).length > 0 && (
+                <motion.div variants={infoItemVariants} className="mb-4">
+                  <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                    Spesifikasi
+                  </h4>
+                  <div className="rounded-lg border border-gray-200 overflow-hidden">
+                    {Object.entries(specs).map(([key, val], i) => (
+                      <div
+                        key={key}
+                        className={`flex justify-between text-xs px-3 py-2.5 ${
+                          i % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                        }`}
+                      >
+                        <span className="text-gray-600 font-semibold">{key}</span>
+                        <span className="text-gray-900 font-medium">{val}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              <Separator className="my-4" />
+
+              {/* Guarantees */}
+              <motion.div variants={infoItemVariants} className="flex items-center gap-4 mb-4">
+                {guarantees.map((g) => (
+                  <div key={g.label} className="flex items-center gap-1.5 text-xs text-gray-700 font-medium">
+                    <g.icon className="h-3.5 w-3.5 text-teal-600" />
+                    {g.label}
+                  </div>
+                ))}
               </motion.div>
-            )}
 
-            <Separator className="my-4" />
-
-            {/* Guarantees */}
-            <motion.div variants={infoItemVariants} className="flex items-center gap-4 mb-4">
-              {guarantees.map((g) => (
-                <div key={g.label} className="flex items-center gap-1.5 text-xs text-gray-600">
-                  <g.icon className="h-3.5 w-3.5 text-teal-600" />
-                  {g.label}
+              {/* Quantity + Actions */}
+              <motion.div variants={infoItemVariants} className="mt-auto space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-700 font-medium">Jumlah:</span>
+                  <div className="flex items-center border border-gray-200 rounded-lg">
+                    <button
+                      className="h-9 w-9 flex items-center justify-center hover:bg-gray-100 rounded-l-lg transition-colors text-gray-700"
+                      onClick={() => setQty(Math.max(product.minOrder, qty - 1))}
+                    >
+                      <Minus className="h-3.5 w-3.5" />
+                    </button>
+                    <span className="w-12 text-center text-sm font-bold text-gray-900">
+                      {qty}
+                    </span>
+                    <button
+                      className="h-9 w-9 flex items-center justify-center hover:bg-gray-100 rounded-r-lg transition-colors text-gray-700"
+                      onClick={() => setQty(qty + 1)}
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <span className="text-xs text-gray-500 font-medium">{product.unit}</span>
                 </div>
-              ))}
-            </motion.div>
 
-            {/* Quantity + Actions */}
-            <motion.div variants={infoItemVariants} className="mt-auto space-y-3">
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">Jumlah:</span>
-                <div className="flex items-center border rounded-lg">
-                  <button
-                    className="h-9 w-9 flex items-center justify-center hover:bg-gray-100 rounded-l-lg transition-colors"
-                    onClick={() => setQty(Math.max(product.minOrder, qty - 1))}
-                  >
-                    <Minus className="h-3.5 w-3.5" />
-                  </button>
-                  <span className="w-12 text-center text-sm font-semibold text-gray-900">
-                    {qty}
-                  </span>
-                  <button
-                    className="h-9 w-9 flex items-center justify-center hover:bg-gray-100 rounded-r-lg transition-colors"
-                    onClick={() => setQty(qty + 1)}
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                  </button>
+                <div className="flex gap-2">
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
+                    <Button
+                      className="w-full bg-teal-600 hover:bg-teal-700 h-11 text-white font-semibold"
+                      onClick={handleAddToCart}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Tambah ke Keranjang
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant="outline"
+                      className="h-11 px-4 border-emerald-300 text-emerald-800 hover:bg-emerald-50 font-semibold"
+                      onClick={handleWhatsApp}
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                    </Button>
+                  </motion.div>
                 </div>
-                <span className="text-xs text-gray-500">{product.unit}</span>
-              </div>
 
-              <div className="flex gap-2">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
-                  <Button
-                    className="w-full bg-teal-600 hover:bg-teal-700 h-11"
-                    onClick={handleAddToCart}
-                  >
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    Tambah ke Keranjang
-                  </Button>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button
-                    variant="outline"
-                    className="h-11 px-4 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-                    onClick={handleWhatsApp}
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                  </Button>
-                </motion.div>
-              </div>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full text-gray-500 hover:text-gray-700"
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  toast.success('Link produk disalin!');
-                }}
-              >
-                <Share2 className="h-3.5 w-3.5 mr-1.5" />
-                Bagikan Produk
-              </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-gray-500 hover:text-gray-800 hover:bg-gray-100 font-medium"
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    toast.success('Link produk disalin!');
+                  }}
+                >
+                  <Share2 className="h-3.5 w-3.5 mr-1.5" />
+                  Bagikan Produk
+                </Button>
+              </motion.div>
             </motion.div>
           </motion.div>
-        </motion.div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </NoSSR>
   );
-};
+}

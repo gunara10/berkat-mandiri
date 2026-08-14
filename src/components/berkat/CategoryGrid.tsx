@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Snowflake, Wind, Droplets, Wrench, Building2, Factory } from 'lucide-react';
+import { Snowflake, Wind, Droplets, Wrench, Building2, Factory, Layers } from 'lucide-react';
 import Image from 'next/image';
 import type { Category } from '@prisma/client';
 
@@ -50,7 +50,7 @@ export function CategoryGrid({ categories }: Props) {
   };
 
   return (
-    <section id="kategori" className="py-16 lg:py-24 bg-white">
+    <section id="kategori" className="py-16 lg:py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         {/* Section header */}
         <motion.div
@@ -60,9 +60,16 @@ export function CategoryGrid({ categories }: Props) {
           transition={{ duration: 0.6, ease: 'easeOut' }}
           className="text-center mb-12"
         >
-          <Badge variant="secondary" className="bg-teal-50 text-teal-800 font-semibold mb-3">
-            Kategori Produk
-          </Badge>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-4"
+          >
+            <Layers className="h-3.5 w-3.5 text-teal-700" />
+            <span className="text-teal-800 text-sm font-semibold">Kategori Produk</span>
+          </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
             Solusi Pendingin <span className="text-teal-800">Lengkap</span>
           </h2>
@@ -72,7 +79,7 @@ export function CategoryGrid({ categories }: Props) {
           </p>
         </motion.div>
 
-        {/* Category cards - staggered scale+fade */}
+        {/* Category cards */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -86,11 +93,11 @@ export function CategoryGrid({ categories }: Props) {
             return (
               <motion.div key={cat.id} variants={itemVariants}>
                 <motion.div
-                  whileHover={{ scale: 1.05, y: -4 }}
+                  whileHover={{ scale: 1.06, y: -6 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 >
                   <Card
-                    className="group cursor-pointer border-2 border-transparent hover:border-teal-500 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+                    className="group cursor-pointer border-2 border-transparent hover:border-teal-400 shadow-sm hover:shadow-xl hover:shadow-teal-500/15 transition-all duration-300 overflow-hidden"
                     onClick={() => scrollToProducts(cat.slug)}
                   >
                     <CardContent className="p-4 text-center">
@@ -107,12 +114,12 @@ export function CategoryGrid({ categories }: Props) {
                             <Icon className="h-10 w-10 text-teal-700" />
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
                       <h3 className="font-semibold text-sm text-gray-900 group-hover:text-teal-700 transition-colors line-clamp-2">
                         {cat.name}
                       </h3>
-                      <p className="text-xs text-gray-600 mt-1 font-medium">{count} produk</p>
+                      <p className="text-xs text-gray-600 mt-1 font-semibold">{count} produk</p>
                     </CardContent>
                   </Card>
                 </motion.div>

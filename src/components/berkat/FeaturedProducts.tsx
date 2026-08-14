@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ShoppingCart, Star, Eye } from 'lucide-react';
+import { ArrowRight, ShoppingCart, Eye, Zap } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
@@ -65,7 +65,7 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
   };
 
   return (
-    <section className="py-16 lg:py-24 bg-gray-50/80">
+    <section className="py-16 lg:py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 25 }}
@@ -75,21 +75,30 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
           className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 gap-4"
         >
           <div>
-            <Badge variant="secondary" className="bg-teal-50 text-teal-800 font-semibold mb-3">
-              Pilihan Terbaik
-            </Badge>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-3"
+            >
+              <Zap className="h-3.5 w-3.5 text-teal-700" />
+              <span className="text-teal-800 text-sm font-semibold">Pilihan Terbaik</span>
+            </motion.div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
               Produk <span className="text-teal-800">Unggulan</span>
             </h2>
           </div>
-          <Button
-            variant="outline"
-            className="border-teal-300 text-teal-800 hover:bg-teal-50 font-semibold self-start sm:self-auto"
-            onClick={scrollToProducts}
-          >
-            Lihat Semua Produk
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+            <Button
+              variant="outline"
+              className="border-teal-400 text-teal-800 hover:bg-teal-50 font-semibold self-start sm:self-auto"
+              onClick={scrollToProducts}
+            >
+              Lihat Semua Produk
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </motion.div>
         </motion.div>
 
         <motion.div
@@ -102,7 +111,7 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
           {products.map((product) => (
             <motion.div key={product.id} variants={cardVariants}>
               <motion.div
-                whileHover={{ y: -6 }}
+                whileHover={{ y: -8 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
                 <Card
@@ -123,12 +132,12 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
                         </Badge>
                       )}
                       {product.originalPrice && product.originalPrice > product.price && (
-                        <Badge className="bg-amber-600 text-white text-[10px] px-2 font-semibold">
+                        <Badge className="bg-red-600 text-white text-[10px] px-2 font-semibold">
                           -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
                         </Badge>
                       )}
                     </div>
-                    {/* Hover overlay - slides up from bottom */}
+                    {/* Hover overlay */}
                     <div className="absolute inset-0 flex items-end justify-center pb-6 z-10">
                       <motion.div
                         className="flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-full px-3 py-2 shadow-lg opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300"
@@ -136,7 +145,7 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
                         <Button
                           size="icon"
                           variant="secondary"
-                          className="h-8 w-8 rounded-full shadow-sm"
+                          className="h-8 w-8 rounded-full shadow-sm hover:bg-gray-200"
                           onClick={(e) => {
                             e.stopPropagation();
                             onProductClick(product);
@@ -168,7 +177,7 @@ export function FeaturedProducts({ products, onProductClick }: Props) {
                         {formatRupiah(product.price)}
                       </span>
                       {product.originalPrice && product.originalPrice > product.price && (
-                        <span className="text-xs text-gray-500 line-through">
+                        <span className="text-xs text-red-500 line-through font-medium">
                           {formatRupiah(product.originalPrice)}
                         </span>
                       )}

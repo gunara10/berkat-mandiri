@@ -24,18 +24,27 @@ export function WhatsAppButton() {
             initial={{ opacity: 0, x: 10, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 10, scale: 0.9 }}
-            className="absolute bottom-full right-0 mb-2 bg-white rounded-lg shadow-xl p-3 max-w-[200px] border border-gray-200"
+            className="absolute bottom-full right-0 mb-3 bg-white rounded-xl shadow-2xl p-3.5 max-w-[220px] border border-gray-100"
           >
             <button
-              className="absolute top-1 right-1 text-gray-400 hover:text-gray-700"
+              className="absolute top-2 right-2 text-gray-400 hover:text-gray-800 transition-colors"
               onClick={() => setShowTooltip(false)}
+              aria-label="Tutup tooltip"
             >
               ✕
             </button>
-            <p className="text-xs text-gray-800 font-semibold">Butuh bantuan?</p>
-            <p className="text-[11px] text-gray-600 mt-0.5">
+            <p className="text-xs text-gray-900 font-bold">Butuh bantuan? 💬</p>
+            <p className="text-[11px] text-gray-600 mt-1 leading-relaxed">
               Chat langsung via WhatsApp untuk respon cepat!
             </p>
+            <a
+              href="https://wa.me/6281350003423?text=Halo%20Berkat%20Mandiri%20Pendingin%2C%20saya%20ingin%20bertanya."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-2 text-[11px] font-semibold text-emerald-700 hover:text-emerald-800"
+            >
+              +62 813-5000-3423 →
+            </a>
           </motion.div>
         )}
       </AnimatePresence>
@@ -45,13 +54,12 @@ export function WhatsAppButton() {
         rel="noopener noreferrer"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        className="flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 hover:bg-emerald-600 transition-colors"
+        className="relative flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 hover:bg-emerald-600 hover:shadow-emerald-500/50 transition-all"
+        aria-label="Chat via WhatsApp"
       >
         <MessageCircle className="h-7 w-7" />
-        <span className="absolute -top-1 -right-1 flex h-4 w-4">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white" />
-        </span>
+        {/* Pulse ring */}
+        <span className="absolute inset-0 rounded-full animate-ping bg-emerald-400/40" />
       </motion.a>
     </div>
   );

@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // Shared hosting friendly settings
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

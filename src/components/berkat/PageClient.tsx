@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { Header } from './Header';
 import { Hero } from './Hero';
 import { CategoryGrid } from './CategoryGrid';
@@ -23,6 +24,18 @@ interface Props {
   testimonials: TestimonialType[];
 }
 
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 z-[100] origin-left"
+      style={{ scaleX }}
+    />
+  );
+}
+
 export function PageClient({
   categories,
   featuredProducts,
@@ -40,6 +53,7 @@ export function PageClient({
 
   return (
     <div className="min-h-screen flex flex-col">
+      <ScrollProgress />
       <Header />
       <main className="flex-1">
         <Hero />
@@ -58,14 +72,12 @@ export function PageClient({
         <Testimonials testimonials={testimonials} />
         <ContactSection />
       </main>
-      <Footer />
-      <WhatsAppButton />
-      <CartDrawer />
-      <ProductDetailModal
+      <Footer />\n      <WhatsAppButton />
+      <CartDrawer />\n      <ProductDetailModal
         product={selectedProduct}
         open={detailOpen}
         onClose={() => setDetailOpen(false)}
       />
     </div>
   );
-};
+}

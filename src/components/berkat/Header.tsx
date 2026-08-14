@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
+import { NoSSR } from '@/components/ui/no-ssr';
 import {
   Menu,
   ShoppingCart,
@@ -48,15 +49,15 @@ export function Header() {
       <div className="bg-teal-900 text-white text-xs py-1.5">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
+            <a href="tel:081220030092" className="flex items-center gap-1 hover:text-teal-200 transition-colors">
               <Phone className="h-3 w-3" />
               081220030092
-            </span>
+            </a>
             <span className="hidden sm:flex items-center gap-1">
               WhatsApp: +62 813-5000-3423
             </span>
           </div>
-          <span className="hidden sm:block">Pengiriman Seluruh Indonesia</span>
+          <span className="hidden sm:block text-teal-200">Pengiriman Seluruh Indonesia</span>
         </div>
       </div>
       {/* Main header */}
@@ -115,7 +116,7 @@ export function Header() {
                 <Button
                   variant="default"
                   size="sm"
-                  className="hidden sm:flex bg-gradient-teal hover:opacity-90 shadow-md"
+                  className="hidden sm:flex bg-gradient-teal hover:opacity-90 shadow-md text-white"
                   onClick={() => scrollToSection('#kontak')}
                 >
                   <Phone className="h-4 w-4 mr-1.5" />
@@ -145,58 +146,64 @@ export function Header() {
                 </Button>
               </motion.div>
 
-              {/* Mobile menu */}
-              <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-                <SheetTrigger asChild className="lg:hidden">
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-72 p-0">
-                  <div className="p-4 border-b bg-teal-900 text-white">
-                    <div className="flex items-center gap-2">
-                      <Snowflake className="h-6 w-6" />
-                      <div>
-                        <div className="font-bold text-sm">BERKAT MANDIRI</div>
-                        <div className="text-[10px] text-teal-200 tracking-wider">
-                          PENDINGIN
+              {/* Mobile menu - wrapped in NoSSR to prevent hydration mismatch */}
+              <NoSSR fallback={
+                <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileOpen(true)}>
+                  <Menu className="h-5 w-5" />
+                </Button>
+              }>
+                <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                  <SheetTrigger asChild className="lg:hidden">
+                    <Button variant="ghost" size="icon">
+                      <Menu className="h-5 w-5" />
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-72 p-0">
+                    <div className="p-4 border-b bg-teal-900 text-white">
+                      <div className="flex items-center gap-2">
+                        <Snowflake className="h-6 w-6" />
+                        <div>
+                          <div className="font-bold text-sm">BERKAT MANDIRI</div>
+                          <div className="text-[10px] text-teal-200 tracking-wider">
+                            PENDINGIN
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <nav className="p-2">
-                    {navItems.map((item, i) => (
-                      <motion.button
-                        key={item.href}
-                        onClick={() => scrollToSection(item.href)}
-                        className="w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:text-teal-700 hover:bg-teal-50 rounded-lg transition-colors"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05, duration: 0.25 }}
+                    <nav className="p-2">
+                      {navItems.map((item, i) => (
+                        <motion.button
+                          key={item.href}
+                          onClick={() => scrollToSection(item.href)}
+                          className="w-full text-left px-4 py-3 text-sm font-medium text-gray-800 hover:text-teal-700 hover:bg-teal-50 rounded-lg transition-colors"
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.05, duration: 0.25 }}
+                        >
+                          {item.label}
+                        </motion.button>
+                      ))}
+                      <motion.div
+                        className="mt-3 px-4"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: navItems.length * 0.05, duration: 0.25 }}
                       >
-                        {item.label}
-                      </motion.button>
-                    ))}
-                    <motion.div
-                      className="mt-3 px-4"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: navItems.length * 0.05, duration: 0.25 }}
-                    >
-                      <Button
-                        className="w-full bg-gradient-teal hover:opacity-90"
-                        onClick={() => {
-                          setMobileOpen(false);
-                          scrollToSection('#kontak');
-                        }}
-                      >
-                        <Phone className="h-4 w-4 mr-2" />
-                        Hubungi Kami
-                      </Button>
-                    </motion.div>
-                  </nav>
-                </SheetContent>
-              </Sheet>
+                        <Button
+                          className="w-full bg-gradient-teal hover:opacity-90 text-white"
+                          onClick={() => {
+                            setMobileOpen(false);
+                            scrollToSection('#kontak');
+                          }}
+                        >
+                          <Phone className="h-4 w-4 mr-2" />
+                          Hubungi Kami
+                        </Button>
+                      </motion.div>
+                    </nav>
+                  </SheetContent>
+                </Sheet>
+              </NoSSR>
             </div>
           </div>
         </div>

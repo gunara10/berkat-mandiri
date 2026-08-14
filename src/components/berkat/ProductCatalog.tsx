@@ -30,6 +30,7 @@ import {
 import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
+import { NoSSR } from '@/components/ui/no-ssr';
 import type { Category } from '@prisma/client';
 
 type Product = {
@@ -122,7 +123,6 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
     fetchProducts();
   }, [fetchProducts]);
 
-  // Listen for category filter events from CategoryGrid
   useEffect(() => {
     const handler = (e: Event) => {
       const slug = (e as CustomEvent).detail;
@@ -174,9 +174,16 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <Badge variant="secondary" className="bg-teal-50 text-teal-800 mb-3">
-            Katalog Produk
-          </Badge>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-3"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-teal-700" />
+            <span className="text-teal-800 text-sm font-semibold">Katalog Produk</span>
+          </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
             Semua <span className="text-teal-800">Produk</span> Kami
           </h2>
@@ -199,7 +206,7 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
               />
               {search && (
                 <button
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800 transition-colors"
                   onClick={() => { setSearch(''); setPage(1); }}
                 >
                   <X className="h-4 w-4" />
@@ -215,60 +222,67 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
                 <SlidersHorizontal className="h-4 w-4 mr-2" />
                 Filter
               </Button>
-              <Select value={category} onValueChange={handleCategoryChange}>
-                <SelectTrigger className="w-full sm:w-48 h-11">
-                  <SelectValue placeholder="Semua Kategori" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Semua Kategori</SelectItem>
-                  {categories.map((c) => (
-                    <SelectItem key={c.id} value={c.slug}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={sort} onValueChange={handleSortChange}>
-                <SelectTrigger className="w-full sm:w-44 h-11">
-                  <SelectValue placeholder="Urutkan" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">Terbaru</SelectItem>
-                  <SelectItem value="name">Nama A-Z</SelectItem>
-                  <SelectItem value="price-asc">Harga Terendah</SelectItem>
-                  <SelectItem value="price-desc">Harga Tertinggi</SelectItem>
-                </SelectContent>
-              </Select>
+              <NoSSR fallback={
+                <div className="flex gap-2">
+                  <div className="w-full sm:w-48 h-11 rounded-md border border-input bg-gray-100 animate-pulse" />
+                  <div className="w-full sm:w-44 h-11 rounded-md border border-input bg-gray-100 animate-pulse" />
+                </div>
+              }>
+                <Select value={category} onValueChange={handleCategoryChange}>
+                  <SelectTrigger className="w-full sm:w-48 h-11">
+                    <SelectValue placeholder="Semua Kategori" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Semua Kategori</SelectItem>
+                    {categories.map((c) => (
+                      <SelectItem key={c.id} value={c.slug}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={sort} onValueChange={handleSortChange}>
+                  <SelectTrigger className="w-full sm:w-44 h-11">
+                    <SelectValue placeholder="Urutkan" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Terbaru</SelectItem>
+                    <SelectItem value="name">Nama A-Z</SelectItem>
+                    <SelectItem value="price-asc">Harga Terendah</SelectItem>
+                    <SelectItem value="price-desc">Harga Tertinggi</SelectItem>
+                  </SelectContent>
+                </Select>
+              </NoSSR>
             </div>
           </div>
           {/* Active filters & info */}
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2 flex-wrap">
               {category !== 'all' && (
-                <Badge variant="secondary" className="bg-teal-50 text-teal-800 gap-1">
+                <Badge variant="secondary" className="bg-teal-100 text-teal-800 font-semibold gap-1">
                   {categories.find(c => c.slug === category)?.name}
                   <button onClick={() => setCategory('all')}><X className="h-3 w-3" /></button>
                 </Badge>
               )}
               {search && (
-                <Badge variant="secondary" className="text-gray-800 gap-1">
+                <Badge variant="secondary" className="bg-gray-200 text-gray-800 font-semibold gap-1">
                   &quot;{search}&quot;
                   <button onClick={() => { setSearch(''); setPage(1); }}><X className="h-3 w-3" /></button>
                 </Badge>
               )}
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-600">{total} produk</span>
+              <span className="text-sm text-gray-700 font-medium">{total} produk</span>
               <div className="hidden sm:flex items-center gap-1 border rounded-lg p-0.5">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-teal-100 text-teal-800' : 'text-gray-500 hover:text-gray-700'}`}
+                  className={`p-1.5 rounded-md transition-all duration-200 ${viewMode === 'grid' ? 'bg-teal-100 text-teal-800' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'}`}
                 >
                   <Grid3X3 className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-teal-100 text-teal-800' : 'text-gray-500 hover:text-gray-700'}`}
+                  className={`p-1.5 rounded-md transition-all duration-200 ${viewMode === 'list' ? 'bg-teal-100 text-teal-800' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'}`}
                 >
                   <List className="h-4 w-4" />
                 </button>
@@ -286,14 +300,27 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
             >
               <Loader2 className="h-10 w-10 text-teal-600" />
             </motion.div>
-            <p className="text-sm text-gray-600">Memuat produk...</p>
+            <p className="text-sm text-gray-700 font-medium">Memuat produk...</p>
           </div>
         ) : products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <PackageSearch className="h-12 w-12 text-gray-300" />
-            <p className="text-gray-700 font-medium">Produk tidak ditemukan</p>
-            <p className="text-sm text-gray-500">Coba ubah filter atau kata kunci pencarian Anda.</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center py-20 gap-3"
+          >
+            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center">
+              <PackageSearch className="h-10 w-10 text-gray-400" />
+            </div>
+            <p className="text-gray-900 font-semibold text-lg">Produk tidak ditemukan</p>
+            <p className="text-sm text-gray-600">Coba ubah filter atau kata kunci pencarian Anda.</p>
+            <Button
+              variant="outline"
+              className="mt-2 border-teal-300 text-teal-800 hover:bg-teal-50"
+              onClick={() => { setSearch(''); setCategory('all'); setPage(1); }}
+            >
+              Reset Filter
+            </Button>
+          </motion.div>
         ) : viewMode === 'grid' ? (
           <motion.div
             layout
@@ -336,7 +363,12 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center justify-center gap-2 mt-10"
+          >
             <Button
               variant="outline"
               size="icon"
@@ -357,7 +389,7 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
                     <Button
                       variant={page === p ? 'default' : 'outline'}
                       size="icon"
-                      className={`h-9 w-9 ${page === p ? 'bg-teal-600 hover:bg-teal-700' : ''}`}
+                      className={`h-9 w-9 ${page === p ? 'bg-teal-600 hover:bg-teal-700 text-white' : ''}`}
                       onClick={() => setPage(p)}
                     >
                       {p}
@@ -374,7 +406,7 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
-          </div>
+          </motion.div>
         )}
       </div>
     </section>
@@ -393,7 +425,7 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
       whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
     >
       <Card
-        className="group cursor-pointer border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-all duration-300 overflow-hidden h-full"
+        className="group cursor-pointer border border-gray-200 hover:border-teal-400 hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 overflow-hidden h-full"
         onClick={onClick}
       >
         <div className="relative aspect-square bg-gray-100 overflow-hidden">
@@ -402,16 +434,16 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
           </div>
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.isNew && (
-              <Badge className="bg-emerald-500 text-white text-[10px] px-1.5 py-0">BARU</Badge>
+              <Badge className="bg-emerald-600 text-white text-[10px] px-1.5 py-0 font-semibold">BARU</Badge>
             )}
             {product.isFeatured && (
-              <Badge className="bg-amber-500 text-white text-[10px] px-1.5 py-0 flex items-center gap-0.5">
+              <Badge className="bg-amber-600 text-white text-[10px] px-1.5 py-0 flex items-center gap-0.5 font-semibold">
                 <Sparkles className="h-2.5 w-2.5" />
                 UNGGULAN
               </Badge>
             )}
             {product.originalPrice && product.originalPrice > product.price && (
-              <Badge className="bg-red-500 text-white text-[10px] px-1.5 py-0">
+              <Badge className="bg-red-600 text-white text-[10px] px-1.5 py-0 font-semibold">
                 -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
               </Badge>
             )}
@@ -424,14 +456,14 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
             <Button
               size="icon"
               variant="secondary"
-              className="h-9 w-9 rounded-full shadow-md"
+              className="h-9 w-9 rounded-full shadow-md hover:bg-gray-200"
               onClick={(e) => { e.stopPropagation(); onClick(); }}
             >
-              <Eye className="h-4 w-4" />
+              <Eye className="h-4 w-4 text-gray-800" />
             </Button>
             <Button
               size="icon"
-              className="h-9 w-9 rounded-full bg-teal-600 hover:bg-teal-700 shadow-md"
+              className="h-9 w-9 rounded-full bg-teal-600 hover:bg-teal-700 shadow-md text-white"
               onClick={onAddToCart}
             >
               <ShoppingCart className="h-4 w-4" />
@@ -448,14 +480,14 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
             {product.name}
           </h3>
           {product.category && (
-            <p className="text-[10px] text-gray-600 mb-1.5">{product.category.name}</p>
+            <p className="text-[10px] text-gray-600 mb-1.5 font-medium">{product.category.name}</p>
           )}
           <div className="flex items-baseline gap-1.5">
             <span className="text-sm font-bold text-teal-800">
               {formatRupiah(product.price)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[10px] text-gray-500 line-through">
+              <span className="text-[10px] text-red-500 line-through font-medium">
                 {formatRupiah(product.originalPrice)}
               </span>
             )}
@@ -478,16 +510,16 @@ function ProductCardList({ product, onClick, onAddToCart }: {
       whileHover={{ y: -3, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
     >
       <Card
-        className="group cursor-pointer border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-all duration-300"
+        className="group cursor-pointer border border-gray-200 hover:border-teal-400 hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300"
         onClick={onClick}
       >
         <CardContent className="p-4 flex gap-4">
           <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center shrink-0 relative overflow-hidden">
             <span className="text-3xl opacity-30">❄️</span>
             <div className="absolute top-1 left-1 flex flex-col gap-0.5">
-              {product.isNew && <Badge className="bg-emerald-500 text-white text-[8px] px-1 py-0">BARU</Badge>}
+              {product.isNew && <Badge className="bg-emerald-600 text-white text-[8px] px-1 py-0 font-semibold">BARU</Badge>}
               {product.originalPrice && product.originalPrice > product.price && (
-                <Badge className="bg-red-500 text-white text-[8px] px-1 py-0">
+                <Badge className="bg-red-600 text-white text-[8px] px-1 py-0 font-semibold">
                   -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
                 </Badge>
               )}
@@ -502,7 +534,7 @@ function ProductCardList({ product, onClick, onAddToCart }: {
                   </span>
                 )}
                 {product.category && (
-                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-gray-700">
+                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-gray-700 border-gray-300">
                     {product.category.name}
                   </Badge>
                 )}
@@ -511,18 +543,18 @@ function ProductCardList({ product, onClick, onAddToCart }: {
                 {product.name}
               </h3>
               {product.shortDesc && (
-                <p className="text-xs text-gray-500 mt-1 line-clamp-2 hidden sm:block">
+                <p className="text-xs text-gray-600 mt-1 line-clamp-2 hidden sm:block">
                   {product.shortDesc}
                 </p>
               )}
             </div>
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-2 flex-wrap gap-2">
               <div className="flex items-baseline gap-2">
                 <span className="text-base font-bold text-teal-800">
                   {formatRupiah(product.price)}
                 </span>
                 {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="text-xs text-gray-500 line-through">
+                  <span className="text-xs text-red-500 line-through font-medium">
                     {formatRupiah(product.originalPrice)}
                   </span>
                 )}
@@ -531,7 +563,7 @@ function ProductCardList({ product, onClick, onAddToCart }: {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-8 text-xs"
+                  className="h-8 text-xs hover:bg-gray-100"
                   onClick={(e) => { e.stopPropagation(); onClick(); }}
                 >
                   <Eye className="h-3.5 w-3.5 mr-1" />
@@ -539,7 +571,7 @@ function ProductCardList({ product, onClick, onAddToCart }: {
                 </Button>
                 <Button
                   size="sm"
-                  className="h-8 text-xs bg-teal-600 hover:bg-teal-700"
+                  className="h-8 text-xs bg-teal-600 hover:bg-teal-700 text-white"
                   onClick={onAddToCart}
                 >
                   <ShoppingCart className="h-3.5 w-3.5 mr-1" />

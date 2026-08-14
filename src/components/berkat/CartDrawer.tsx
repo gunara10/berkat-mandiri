@@ -27,6 +27,7 @@ import {
 import { useCartStore, type CartItem } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
+import { NoSSR } from '@/components/ui/no-ssr';
 
 const cartItemVariants = {
   initial: { opacity: 0, x: 40, scale: 0.95 },
@@ -101,7 +102,8 @@ export function CartDrawer() {
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
+    <NoSSR>
+      <Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
       <SheetContent className="w-full sm:max-w-md flex flex-col p-0">
         {showInquiry ? (
           // Inquiry Form View
@@ -110,7 +112,7 @@ export function CartDrawer() {
               <SheetTitle className="text-base text-gray-900">Permintaan Penawaran</SheetTitle>
             </SheetHeader>
             <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-700">
                 Lengkapi data berikut untuk mendapatkan penawaran harga terbaik dari tim kami.
               </p>
               <div>
@@ -220,10 +222,10 @@ export function CartDrawer() {
                 className="flex-1 flex flex-col items-center justify-center p-8 text-center"
               >
                 <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                  <Package className="h-8 w-8 text-gray-300" />
+                  <Package className="h-8 w-8 text-gray-400" />
                 </div>
                 <p className="font-medium text-gray-700">Keranjang kosong</p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-600 mt-1">
                   Tambahkan produk untuk memulai pemesanan.
                 </p>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
@@ -300,7 +302,8 @@ export function CartDrawer() {
           </>
         )}
       </SheetContent>
-    </Sheet>
+      </Sheet>
+    </NoSSR>
   );
 }
 

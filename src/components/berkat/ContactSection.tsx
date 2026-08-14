@@ -13,7 +13,7 @@ import {
   Clock,
   Send,
   MessageCircle,
-  Globe,
+  ArrowUpRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -23,18 +23,21 @@ const contactInfo = [
     label: 'Telepon',
     value: '081220030092',
     desc: 'Senin - Sabtu, 08:00 - 17:00',
+    href: 'tel:081220030092',
   },
   {
     icon: MessageCircle,
     label: 'WhatsApp',
     value: '+62 813-5000-3423',
     desc: 'Respon cepat 24 jam',
+    href: 'https://wa.me/6281350003423?text=Halo%20Berkat%20Mandiri%20Pendingin%2C%20saya%20ingin%20bertanya.',
   },
   {
     icon: Mail,
     label: 'Email',
     value: 'info@berkatmandiripendingin.com',
     desc: 'Respon dalam 1x24 jam',
+    href: 'mailto:info@berkatmandiripendingin.com',
   },
   {
     icon: MapPin,
@@ -126,10 +129,16 @@ export function ContactSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <div className="inline-flex items-center gap-2 bg-teal-50 rounded-full px-4 py-1.5 mb-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 bg-teal-100 rounded-full px-4 py-1.5 mb-4"
+          >
             <span className="w-2 h-2 bg-teal-600 rounded-full" />
-            <span className="text-teal-800 text-sm font-medium">Hubungi Kami</span>
-          </div>
+            <span className="text-teal-800 text-sm font-semibold">Hubungi Kami</span>
+          </motion.div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
             Siap <span className="text-teal-800">Membantu Anda</span>
           </h2>
@@ -150,22 +159,51 @@ export function ContactSection() {
           >
             {contactInfo.map((info) => (
               <motion.div key={info.label} variants={cardVariants}>
-                <Card className="border-gray-200 hover:border-teal-300 hover:shadow-lg transition-all duration-300">
-                  <CardContent className="p-4 flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center shrink-0">
-                      <info.icon className="h-5 w-5 text-teal-700" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-600 font-medium uppercase tracking-wider">
-                        {info.label}
-                      </p>
-                      <p className="text-sm font-semibold text-gray-900 mt-0.5">
-                        {info.value}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-0.5">{info.desc}</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                {info.href ? (
+                  <a
+                    href={info.href}
+                    target={info.href.startsWith('http') ? '_blank' : undefined}
+                    rel={info.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className="block"
+                  >
+                    <Card className="border-gray-200 hover:border-teal-400 hover:shadow-lg transition-all duration-300 cursor-pointer group">
+                      <CardContent className="p-4 flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center shrink-0">
+                          <info.icon className="h-5 w-5 text-teal-700" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-1">
+                            <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">
+                              {info.label}
+                            </p>
+                            <ArrowUpRight className="h-3 w-3 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </div>
+                          <p className="text-sm font-semibold text-gray-900 mt-0.5 group-hover:text-teal-700 transition-colors">
+                            {info.value}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-0.5">{info.desc}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </a>
+                ) : (
+                  <Card className="border-gray-200">
+                    <CardContent className="p-4 flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center shrink-0">
+                        <info.icon className="h-5 w-5 text-teal-700" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">
+                          {info.label}
+                        </p>
+                        <p className="text-sm font-semibold text-gray-900 mt-0.5">
+                          {info.value}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-0.5">{info.desc}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </motion.div>
             ))}
           </motion.div>
@@ -183,13 +221,13 @@ export function ContactSection() {
                 <h3 className="text-lg font-bold text-gray-900 mb-1">
                   Kirim Pesan
                 </h3>
-                <p className="text-sm text-gray-500 mb-5">
+                <p className="text-sm text-gray-600 mb-5">
                   Isi formulir di bawah dan tim kami akan merespon dalam waktu 1x24 jam.
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-medium text-gray-700">Nama *</label>
+                      <label className="text-xs font-semibold text-gray-700">Nama *</label>
                       <Input
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -199,7 +237,7 @@ export function ContactSection() {
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-gray-700">Email *</label>
+                      <label className="text-xs font-semibold text-gray-700">Email *</label>
                       <Input
                         type="email"
                         value={form.email}
@@ -212,7 +250,7 @@ export function ContactSection() {
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-medium text-gray-700">No. Telepon</label>
+                      <label className="text-xs font-semibold text-gray-700">No. Telepon</label>
                       <Input
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -221,7 +259,7 @@ export function ContactSection() {
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-gray-700">Subjek</label>
+                      <label className="text-xs font-semibold text-gray-700">Subjek</label>
                       <Input
                         value={form.subject}
                         onChange={(e) => setForm({ ...form, subject: e.target.value })}
@@ -231,7 +269,7 @@ export function ContactSection() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-gray-700">Pesan *</label>
+                    <label className="text-xs font-semibold text-gray-700">Pesan *</label>
                     <Textarea
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
@@ -245,7 +283,7 @@ export function ContactSection() {
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
                       <Button
                         type="submit"
-                        className="w-full bg-teal-600 hover:bg-teal-700 h-11"
+                        className="w-full bg-teal-600 hover:bg-teal-700 h-11 text-white font-semibold"
                         disabled={sending}
                       >
                         {sending ? 'Mengirim...' : 'Kirim Pesan'}
@@ -256,7 +294,7 @@ export function ContactSection() {
                       <Button
                         type="button"
                         variant="outline"
-                        className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 h-11"
+                        className="border-emerald-300 text-emerald-800 hover:bg-emerald-50 h-11 font-semibold"
                         onClick={() => {
                           const msg = `Halo, saya ingin bertanya tentang produk di Berkat Mandiri Pendingin.`;
                           window.open(
