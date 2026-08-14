@@ -1,4 +1,4 @@
-'client';
+'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle } from 'lucide-react';
@@ -24,23 +24,23 @@ export function WhatsAppButton() {
             initial={{ opacity: 0, x: 10, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 10, scale: 0.9 }}
-            className="absolute bottom-full right-0 mb-2 bg-white rounded-lg shadow-xl p-3 max-w-[200px] border"
+            className="absolute bottom-full right-0 mb-2 bg-white rounded-lg shadow-xl p-3 max-w-[200px] border border-gray-200"
           >
             <button
-              className="absolute top-1 right-1 text-gray-300 hover:text-gray-500"
+              className="absolute top-1 right-1 text-gray-400 hover:text-gray-700"
               onClick={() => setShowTooltip(false)}
             >
               ✕
             </button>
-            <p className="text-xs text-gray-700 font-medium">Butuh bantuan?</p>
-            <p className="text-[11px] text-gray-400 mt-0.5">
+            <p className="text-xs text-gray-800 font-semibold">Butuh bantuan?</p>
+            <p className="text-[11px] text-gray-600 mt-0.5">
               Chat langsung via WhatsApp untuk respon cepat!
             </p>
           </motion.div>
         )}
       </AnimatePresence>
       <motion.a
-        href="https://wa.me/6281234567890?text=Halo%20Berkat%20Mandiri%20Pendingin%2C%20saya%20ingin%20bertanya."
+        href="https://wa.me/6281350003423?text=Halo%20Berkat%20Mandiri%20Pendingin%2C%20saya%20ingin%20bertanya."
         target="_blank"
         rel="noopener noreferrer"
         whileHover={{ scale: 1.1 }}

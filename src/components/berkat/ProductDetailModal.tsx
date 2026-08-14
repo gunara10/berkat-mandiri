@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   Dialog,
   DialogContent,
@@ -55,6 +56,39 @@ interface Props {
   onClose: () => void;
 }
 
+const slideUpVariants = {
+  hidden: { opacity: 0, y: 40, scale: 0.97 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 300, damping: 28 },
+  },
+  exit: {
+    opacity: 0,
+    y: 30,
+    scale: 0.97,
+    transition: { duration: 0.2 },
+  },
+};
+
+const infoVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06, delayChildren: 0.15 },
+  },
+};
+
+const infoItemVariants = {
+  hidden: { opacity: 0, x: 12 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { type: 'spring', stiffness: 200, damping: 22 },
+  },
+};
+
 export function ProductDetailModal({ product, open, onClose }: Props) {
   const [qty, setQty] = useState(1);
   const addItem = useCartStore((s) => s.addItem);
@@ -89,7 +123,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
   const handleWhatsApp = () => {
     const msg = `Halo, saya tertarik dengan produk:\n\n*${product.name}*\nHarga: ${formatRupiah(product.price)}\nJumlah: ${qty} ${product.unit}\n\nMohon info ketersediaan dan cara pemesanan. Terima kasih!`;
     window.open(
-      `https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`,
+      `https://wa.me/6281350003423?text=${encodeURIComponent(msg)}`,
       '_blank'
     );
   };
@@ -97,7 +131,13 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 scrollbar-thin">
-        <div className="grid md:grid-cols-2">
+        <motion.div
+          variants={slideUpVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="grid md:grid-cols-2"
+        >
           {/* Image area */}
           <div className="relative aspect-square bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center">
             <span className="text-8xl opacity-20">❄️</span>
@@ -117,57 +157,68 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
           </div>
 
           {/* Info area */}
-          <div className="p-6 flex flex-col">
+          <motion.div
+            variants={infoVariants}
+            initial="hidden"
+            animate="visible"
+            className="p-6 flex flex-col"
+          >
             <DialogHeader className="mb-4">
-              {product.brand && (
-                <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">
-                  {product.brand}
-                  {product.model && ` · ${product.model}`}
-                </span>
-              )}
-              <DialogTitle className="text-xl leading-snug">
-                {product.name}
-              </DialogTitle>
-              {product.category && (
-                <Badge variant="outline" className="w-fit text-xs">
-                  {product.category.name}
-                </Badge>
-              )}
+              <motion.div variants={infoItemVariants}>
+                {product.brand && (
+                  <span className="text-xs font-semibold text-teal-700 uppercase tracking-wider">
+                    {product.brand}
+                    {product.model && ` · ${product.model}`}
+                  </span>
+                )}
+              </motion.div>
+              <motion.div variants={infoItemVariants}>
+                <DialogTitle className="text-xl leading-snug text-gray-900">
+                  {product.name}
+                </DialogTitle>
+              </motion.div>
+              <motion.div variants={infoItemVariants}>
+                {product.category && (
+                  <Badge variant="outline" className="w-fit text-xs text-gray-800">
+                    {product.category.name}
+                  </Badge>
+                )}
+              </motion.div>
             </DialogHeader>
 
             {/* Price */}
-            <div className="mb-4">
+            <motion.div variants={infoItemVariants} className="mb-4">
               <div className="flex items-baseline gap-3">
-                <span className="text-2xl font-extrabold text-teal-700">
+                <span className="text-2xl font-extrabold text-teal-800">
                   {formatRupiah(product.price)}
                 </span>
                 {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="text-sm text-gray-400 line-through">
+                  <span className="text-sm text-gray-500 line-through">
                     {formatRupiah(product.originalPrice)}
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-500 mt-1">
                 Minimal order: {product.minOrder} {product.unit}
               </p>
-            </div>
+            </motion.div>
 
             {/* Description */}
             {(product.shortDesc || product.description) && (
-              <div className="mb-4">
-                <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+              <motion.div variants={infoItemVariants} className="mb-4">
+                <h4 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">
                   Deskripsi
                 </h4>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="text-sm text-gray-700 leading-relaxed">
                   {product.description || product.shortDesc}
                 </p>
-              </div>
+              </motion.div>
             )}
 
             {/* Specs */}
             {Object.keys(specs).length > 0 && (
-              <div className="mb-4">
-                <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+              <motion.div variants={infoItemVariants} className="mb-4">
+                <h4 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">
                   Spesifikasi
                 </h4>
                 <div className="rounded-lg border overflow-hidden">
@@ -178,28 +229,28 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                         i % 2 === 0 ? 'bg-gray-50' : 'bg-white'
                       }`}
                     >
-                      <span className="text-gray-500 font-medium">{key}</span>
-                      <span className="text-gray-700">{val}</span>
+                      <span className="text-gray-600 font-medium">{key}</span>
+                      <span className="text-gray-900">{val}</span>
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             )}
 
             <Separator className="my-4" />
 
             {/* Guarantees */}
-            <div className="flex items-center gap-4 mb-4">
+            <motion.div variants={infoItemVariants} className="flex items-center gap-4 mb-4">
               {guarantees.map((g) => (
-                <div key={g.label} className="flex items-center gap-1.5 text-xs text-gray-500">
+                <div key={g.label} className="flex items-center gap-1.5 text-xs text-gray-600">
                   <g.icon className="h-3.5 w-3.5 text-teal-600" />
                   {g.label}
                 </div>
               ))}
-            </div>
+            </motion.div>
 
             {/* Quantity + Actions */}
-            <div className="mt-auto space-y-3">
+            <motion.div variants={infoItemVariants} className="mt-auto space-y-3">
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-600">Jumlah:</span>
                 <div className="flex items-center border rounded-lg">
@@ -209,7 +260,7 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                   >
                     <Minus className="h-3.5 w-3.5" />
                   </button>
-                  <span className="w-12 text-center text-sm font-semibold">
+                  <span className="w-12 text-center text-sm font-semibold text-gray-900">
                     {qty}
                   </span>
                   <button
@@ -219,30 +270,34 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                     <Plus className="h-3.5 w-3.5" />
                   </button>
                 </div>
-                <span className="text-xs text-gray-400">{product.unit}</span>
+                <span className="text-xs text-gray-500">{product.unit}</span>
               </div>
 
               <div className="flex gap-2">
-                <Button
-                  className="flex-1 bg-teal-600 hover:bg-teal-700 h-11"
-                  onClick={handleAddToCart}
-                >
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  Tambah ke Keranjang
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-11 px-4 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-                  onClick={handleWhatsApp}
-                >
-                  <MessageCircle className="h-4 w-4" />
-                </Button>
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
+                  <Button
+                    className="w-full bg-teal-600 hover:bg-teal-700 h-11"
+                    onClick={handleAddToCart}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Tambah ke Keranjang
+                  </Button>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    variant="outline"
+                    className="h-11 px-4 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                    onClick={handleWhatsApp}
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                  </Button>
+                </motion.div>
               </div>
 
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-full text-gray-400 hover:text-gray-600"
+                className="w-full text-gray-500 hover:text-gray-700"
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href);
                   toast.success('Link produk disalin!');
@@ -251,9 +306,9 @@ export function ProductDetailModal({ product, open, onClose }: Props) {
                 <Share2 className="h-3.5 w-3.5 mr-1.5" />
                 Bagikan Produk
               </Button>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   );

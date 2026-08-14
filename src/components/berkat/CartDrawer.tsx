@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sheet,
   SheetContent,
@@ -27,6 +28,22 @@ import { useCartStore, type CartItem } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
 
+const cartItemVariants = {
+  initial: { opacity: 0, x: 40, scale: 0.95 },
+  animate: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 300, damping: 26 },
+  },
+  exit: {
+    opacity: 0,
+    x: -40,
+    scale: 0.95,
+    transition: { duration: 0.2 },
+  },
+};
+
 export function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, clearCart, getTotal, getTotalItems } =
     useCartStore();
@@ -43,7 +60,7 @@ export function CartDrawer() {
       (item) => `• ${item.name} x${item.quantity} = ${formatRupiah(item.price * item.quantity)}`
     );
     const msg = `Halo, saya ingin memesan:\n\n${lines.join('\n')}\n\nTotal: ${formatRupiah(total)}\n\nMohon info ketersediaan dan ongkos kirim. Terima kasih!`;
-    window.open(`https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/6281350003423?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   const handleSubmitInquiry = async () => {
@@ -90,10 +107,10 @@ export function CartDrawer() {
           // Inquiry Form View
           <>
             <SheetHeader className="p-4 pb-2 border-b">
-              <SheetTitle className="text-base">Permintaan Penawaran</SheetTitle>
+              <SheetTitle className="text-base text-gray-900">Permintaan Penawaran</SheetTitle>
             </SheetHeader>
             <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-600">
                 Lengkapi data berikut untuk mendapatkan penawaran harga terbaik dari tim kami.
               </p>
               <div>
@@ -148,17 +165,17 @@ export function CartDrawer() {
 
               {/* Order summary in inquiry */}
               <div className="bg-gray-50 rounded-lg p-3">
-                <h4 className="text-xs font-semibold text-gray-700 mb-2">Ringkasan Pesanan</h4>
+                <h4 className="text-xs font-semibold text-gray-800 mb-2">Ringkasan Pesanan</h4>
                 {items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-xs text-gray-600 py-1">
+                  <div key={item.id} className="flex justify-between text-xs text-gray-700 py-1">
                     <span className="flex-1 truncate mr-2">{item.name} x{item.quantity}</span>
-                    <span>{formatRupiah(item.price * item.quantity)}</span>
+                    <span className="text-gray-900 font-medium">{formatRupiah(item.price * item.quantity)}</span>
                   </div>
                 ))}
                 <Separator className="my-2" />
                 <div className="flex justify-between text-sm font-bold">
-                  <span>Total</span>
-                  <span className="text-teal-700">{formatRupiah(total)}</span>
+                  <span className="text-gray-900">Total</span>
+                  <span className="text-teal-800">{formatRupiah(total)}</span>
                 </div>
               </div>
             </div>
@@ -184,11 +201,11 @@ export function CartDrawer() {
           // Cart View
           <>
             <SheetHeader className="p-4 pb-2 border-b">
-              <SheetTitle className="text-base flex items-center gap-2">
+              <SheetTitle className="text-base flex items-center gap-2 text-gray-900">
                 <ShoppingCart className="h-4 w-4" />
                 Keranjang Belanja
                 {count > 0 && (
-                  <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full font-semibold">
+                  <span className="text-xs bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full font-semibold">
                     {count} item
                   </span>
                 )}
@@ -196,70 +213,88 @@ export function CartDrawer() {
             </SheetHeader>
 
             {items.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                className="flex-1 flex flex-col items-center justify-center p-8 text-center"
+              >
                 <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
                   <Package className="h-8 w-8 text-gray-300" />
                 </div>
                 <p className="font-medium text-gray-700">Keranjang kosong</p>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-gray-500 mt-1">
                   Tambahkan produk untuk memulai pemesanan.
                 </p>
-                <Button
-                  variant="outline"
-                  className="mt-4 border-teal-200 text-teal-700"
-                  onClick={closeCart}
-                >
-                  Jelajahi Produk
-                  <ArrowRight className="h-4 w-4 ml-1.5" />
-                </Button>
-              </div>
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <Button
+                    variant="outline"
+                    className="mt-4 border-teal-200 text-teal-800"
+                    onClick={closeCart}
+                  >
+                    Jelajahi Produk
+                    <ArrowRight className="h-4 w-4 ml-1.5" />
+                  </Button>
+                </motion.div>
+              </motion.div>
             ) : (
               <>
                 <div className="flex-1 overflow-y-auto scrollbar-thin">
                   <div className="p-4 space-y-3">
-                    {items.map((item) => (
-                      <CartItemRow
-                        key={item.id}
-                        item={item}
-                        onRemove={() => removeItem(item.id)}
-                        onUpdateQty={(q) => updateQuantity(item.id, q)}
-                      />
-                    ))}
+                    <AnimatePresence initial={false}>
+                      {items.map((item) => (
+                        <CartItemRow
+                          key={item.id}
+                          item={item}
+                          onRemove={() => removeItem(item.id)}
+                          onUpdateQty={(q) => updateQuantity(item.id, q)}
+                        />
+                      ))}
+                    </AnimatePresence>
                   </div>
                 </div>
 
-                <div className="border-t p-4 space-y-3">
-                  <div className="flex justify-between text-sm text-gray-500">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.3 }}
+                  className="border-t p-4 space-y-3"
+                >
+                  <div className="flex justify-between text-sm text-gray-600">
                     <span>Subtotal ({count} item)</span>
-                    <span>{formatRupiah(total)}</span>
+                    <span className="text-gray-900">{formatRupiah(total)}</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span className="text-teal-700">{formatRupiah(total)}</span>
+                    <span className="text-gray-900">Total</span>
+                    <span className="text-teal-800">{formatRupiah(total)}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      className="bg-emerald-600 hover:bg-emerald-700 h-10 text-sm"
-                      onClick={handleWhatsAppOrder}
-                    >
-                      <MessageCircle className="h-4 w-4 mr-1.5" />
-                      WhatsApp
-                    </Button>
-                    <Button
-                      className="bg-teal-600 hover:bg-teal-700 h-10 text-sm"
-                      onClick={() => setShowInquiry(true)}
-                    >
-                      <Send className="h-4 w-4 mr-1.5" />
-                      Minta Penawaran
-                    </Button>
+                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                      <Button
+                        className="w-full bg-emerald-600 hover:bg-emerald-700 h-10 text-sm"
+                        onClick={handleWhatsAppOrder}
+                      >
+                        <MessageCircle className="h-4 w-4 mr-1.5" />
+                        WhatsApp
+                      </Button>
+                    </motion.div>
+                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                      <Button
+                        className="w-full bg-teal-600 hover:bg-teal-700 h-10 text-sm"
+                        onClick={() => setShowInquiry(true)}
+                      >
+                        <Send className="h-4 w-4 mr-1.5" />
+                        Minta Penawaran
+                      </Button>
+                    </motion.div>
                   </div>
                   <button
-                    className="w-full text-center text-xs text-gray-400 hover:text-red-500 transition-colors"
+                    className="w-full text-center text-xs text-gray-500 hover:text-red-500 transition-colors"
                     onClick={clearCart}
                   >
                     Kosongkan Keranjang
                   </button>
-                </div>
+                </motion.div>
               </>
             )}
           </>
@@ -279,7 +314,14 @@ function CartItemRow({
   onUpdateQty: (q: number) => void;
 }) {
   return (
-    <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
+    <motion.div
+      variants={cartItemVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      layout
+      className="flex gap-3 p-3 bg-gray-50 rounded-lg"
+    >
       <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center shrink-0">
         <span className="text-lg opacity-40">❄️</span>
       </div>
@@ -288,37 +330,39 @@ function CartItemRow({
           <h4 className="text-sm font-medium text-gray-900 line-clamp-2 pr-2">
             {item.name}
           </h4>
-          <button
+          <motion.button
             onClick={onRemove}
-            className="text-gray-300 hover:text-red-500 transition-colors shrink-0"
+            className="text-gray-400 hover:text-red-500 transition-colors shrink-0"
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
           >
             <Trash2 className="h-3.5 w-3.5" />
-          </button>
+          </motion.button>
         </div>
         {item.category && (
-          <p className="text-[10px] text-gray-400 mt-0.5">{item.category}</p>
+          <p className="text-[10px] text-gray-600 mt-0.5">{item.category}</p>
         )}
         <div className="flex items-center justify-between mt-1.5">
           <div className="flex items-center border rounded-md">
             <button
-              className="h-7 w-7 flex items-center justify-center hover:bg-gray-100 rounded-l-md text-gray-500"
+              className="h-7 w-7 flex items-center justify-center hover:bg-gray-200 rounded-l-md text-gray-600 transition-colors"
               onClick={() => onUpdateQty(item.quantity - 1)}
             >
               <Minus className="h-3 w-3" />
             </button>
-            <span className="w-8 text-center text-xs font-semibold">{item.quantity}</span>
+            <span className="w-8 text-center text-xs font-semibold text-gray-900">{item.quantity}</span>
             <button
-              className="h-7 w-7 flex items-center justify-center hover:bg-gray-100 rounded-r-md text-gray-500"
+              className="h-7 w-7 flex items-center justify-center hover:bg-gray-200 rounded-r-md text-gray-600 transition-colors"
               onClick={() => onUpdateQty(item.quantity + 1)}
             >
               <Plus className="h-3 w-3" />
             </button>
           </div>
-          <span className="text-sm font-bold text-teal-700">
+          <span className="text-sm font-bold text-teal-800">
             {formatRupiah(item.price * item.quantity)}
           </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

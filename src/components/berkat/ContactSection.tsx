@@ -21,13 +21,13 @@ const contactInfo = [
   {
     icon: Phone,
     label: 'Telepon',
-    value: '021-8899-7766',
+    value: '081220030092',
     desc: 'Senin - Sabtu, 08:00 - 17:00',
   },
   {
     icon: MessageCircle,
     label: 'WhatsApp',
-    value: '0812-3456-7890',
+    value: '+62 813-5000-3423',
     desc: 'Respon cepat 24 jam',
   },
   {
@@ -49,6 +49,32 @@ const contactInfo = [
     desc: '08:00 - 17:00 WIB',
   },
 ];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.15 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, x: -30 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { type: 'spring', stiffness: 200, damping: 20 },
+  },
+};
+
+const formVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 150, damping: 20, delay: 0.2 },
+  },
+};
 
 export function ContactSection() {
   const [sending, setSending] = useState(false);
@@ -92,55 +118,63 @@ export function ContactSection() {
   return (
     <section id="kontak" className="py-16 lg:py-24 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        {/* Section Header */}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="inline-flex items-center gap-2 bg-teal-50 rounded-full px-4 py-1.5 mb-4">
-            <span className="w-2 h-2 bg-teal-500 rounded-full" />
-            <span className="text-teal-700 text-sm font-medium">Hubungi Kami</span>
+            <span className="w-2 h-2 bg-teal-600 rounded-full" />
+            <span className="text-teal-800 text-sm font-medium">Hubungi Kami</span>
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Siap <span className="text-teal-700">Membantu Anda</span>
+            Siap <span className="text-teal-800">Membantu Anda</span>
           </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Hubungi tim kami untuk konsultasi gratis, penawaran harga, atau
             informasi lebih lanjut mengenai produk dan layanan kami.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-5 gap-8">
           {/* Contact Info Cards */}
-          <div className="lg:col-span-2 space-y-3">
-            {contactInfo.map((info, i) => (
-              <motion.div
-                key={info.label}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <Card className="border-gray-200 hover:border-teal-200 hover:shadow-md transition-all">
+          <motion.div
+            className="lg:col-span-2 space-y-3"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {contactInfo.map((info) => (
+              <motion.div key={info.label} variants={cardVariants}>
+                <Card className="border-gray-200 hover:border-teal-300 hover:shadow-lg transition-all duration-300">
                   <CardContent className="p-4 flex items-start gap-3">
                     <div className="w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center shrink-0">
                       <info.icon className="h-5 w-5 text-teal-700" />
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                      <p className="text-xs text-gray-600 font-medium uppercase tracking-wider">
                         {info.label}
                       </p>
                       <p className="text-sm font-semibold text-gray-900 mt-0.5">
                         {info.value}
                       </p>
-                      <p className="text-xs text-gray-400 mt-0.5">{info.desc}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{info.desc}</p>
                     </div>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Contact Form */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            variants={formVariants}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
             className="lg:col-span-3"
           >
@@ -149,7 +183,7 @@ export function ContactSection() {
                 <h3 className="text-lg font-bold text-gray-900 mb-1">
                   Kirim Pesan
                 </h3>
-                <p className="text-sm text-gray-400 mb-5">
+                <p className="text-sm text-gray-500 mb-5">
                   Isi formulir di bawah dan tim kami akan merespon dalam waktu 1x24 jam.
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -208,29 +242,33 @@ export function ContactSection() {
                     />
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <Button
-                      type="submit"
-                      className="flex-1 bg-teal-600 hover:bg-teal-700 h-11"
-                      disabled={sending}
-                    >
-                      {sending ? 'Mengirim...' : 'Kirim Pesan'}
-                      <Send className="h-4 w-4 ml-1.5" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 h-11"
-                      onClick={() => {
-                        const msg = `Halo, saya ingin bertanya tentang produk di Berkat Mandiri Pendingin.`;
-                        window.open(
-                          `https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`,
-                          '_blank'
-                        );
-                      }}
-                    >
-                      <MessageCircle className="h-4 w-4 mr-1.5" />
-                      Chat WhatsApp
-                    </Button>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
+                      <Button
+                        type="submit"
+                        className="w-full bg-teal-600 hover:bg-teal-700 h-11"
+                        disabled={sending}
+                      >
+                        {sending ? 'Mengirim...' : 'Kirim Pesan'}
+                        <Send className="h-4 w-4 ml-1.5" />
+                      </Button>
+                    </motion.div>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 h-11"
+                        onClick={() => {
+                          const msg = `Halo, saya ingin bertanya tentang produk di Berkat Mandiri Pendingin.`;
+                          window.open(
+                            `https://wa.me/6281350003423?text=${encodeURIComponent(msg)}`,
+                            '_blank'
+                          );
+                        }}
+                      >
+                        <MessageCircle className="h-4 w-4 mr-1.5" />
+                        Chat WhatsApp
+                      </Button>
+                    </motion.div>
                   </div>
                 </form>
               </CardContent>

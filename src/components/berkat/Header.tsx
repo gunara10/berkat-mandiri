@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
@@ -10,8 +10,6 @@ import {
   ShoppingCart,
   Phone,
   Snowflake,
-  X,
-  ChevronDown,
 } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
 
@@ -52,10 +50,10 @@ export function Header() {
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
               <Phone className="h-3 w-3" />
-              021-8899-7766
+              081220030092
             </span>
             <span className="hidden sm:flex items-center gap-1">
-              WhatsApp: 0812-3456-7890
+              WhatsApp: +62 813-5000-3423
             </span>
           </div>
           <span className="hidden sm:block">Pengiriman Seluruh Indonesia</span>
@@ -63,9 +61,9 @@ export function Header() {
       </div>
       {/* Main header */}
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 z-50 transition-all duration-500 ease-out ${
           scrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-lg'
+            ? 'bg-white/95 backdrop-blur-md shadow-lg shadow-gray-900/[0.06]'
             : 'bg-white shadow-sm'
         }`}
       >
@@ -76,9 +74,18 @@ export function Header() {
               onClick={() => scrollToSection('#beranda')}
               className="flex items-center gap-2 group"
             >
-              <div className="w-10 h-10 rounded-lg bg-gradient-teal flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-                <Snowflake className="h-6 w-6 text-white" />
-              </div>
+              <motion.div
+                className="w-10 h-10 rounded-lg bg-gradient-teal flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-300"
+                whileHover={{ scale: 1.05 }}
+              >
+                <motion.div
+                  className="text-white"
+                  whileHover={{ rotate: [0, -120, 240, 360] }}
+                  transition={{ duration: 0.6, ease: 'easeInOut' }}
+                >
+                  <Snowflake className="h-6 w-6" />
+                </motion.div>
+              </motion.div>
               <div className="hidden sm:block">
                 <div className="font-bold text-sm leading-tight text-teal-800">
                   BERKAT MANDIRI
@@ -104,29 +111,39 @@ export function Header() {
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <Button
-                variant="default"
-                size="sm"
-                className="hidden sm:flex bg-gradient-teal hover:opacity-90 shadow-md"
-                onClick={() => scrollToSection('#kontak')}
-              >
-                <Phone className="h-4 w-4 mr-1.5" />
-                Hubungi Kami
-              </Button>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="hidden sm:flex bg-gradient-teal hover:opacity-90 shadow-md"
+                  onClick={() => scrollToSection('#kontak')}
+                >
+                  <Phone className="h-4 w-4 mr-1.5" />
+                  Hubungi Kami
+                </Button>
+              </motion.div>
 
-              <Button
-                variant="outline"
-                size="icon"
-                className="relative"
-                onClick={openCart}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {totalItems > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-teal-600 text-white text-[10px] border-2 border-white">
-                    {totalItems}
-                  </Badge>
-                )}
-              </Button>
+              <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="relative"
+                  onClick={openCart}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  {totalItems > 0 && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                    >
+                      <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-teal-600 text-white text-[10px] border-2 border-white">
+                        {totalItems}
+                      </Badge>
+                    </motion.div>
+                  )}
+                </Button>
+              </motion.div>
 
               {/* Mobile menu */}
               <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -148,16 +165,24 @@ export function Header() {
                     </div>
                   </div>
                   <nav className="p-2">
-                    {navItems.map((item) => (
-                      <button
+                    {navItems.map((item, i) => (
+                      <motion.button
                         key={item.href}
                         onClick={() => scrollToSection(item.href)}
                         className="w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:text-teal-700 hover:bg-teal-50 rounded-lg transition-colors"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.05, duration: 0.25 }}
                       >
                         {item.label}
-                      </button>
+                      </motion.button>
                     ))}
-                    <div className="mt-3 px-4">
+                    <motion.div
+                      className="mt-3 px-4"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: navItems.length * 0.05, duration: 0.25 }}
+                    >
                       <Button
                         className="w-full bg-gradient-teal hover:opacity-90"
                         onClick={() => {
@@ -168,7 +193,7 @@ export function Header() {
                         <Phone className="h-4 w-4 mr-2" />
                         Hubungi Kami
                       </Button>
-                    </div>
+                    </motion.div>
                   </nav>
                 </SheetContent>
               </Sheet>

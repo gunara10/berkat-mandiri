@@ -54,6 +54,33 @@ interface Props {
 
 const PAGE_SIZE = 12;
 
+const gridContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06, delayChildren: 0.05 },
+  },
+};
+
+const gridItemVariants = {
+  hidden: { opacity: 0, y: 24, scale: 0.96 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 260, damping: 24 },
+  },
+};
+
+const listItemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 220, damping: 22 },
+  },
+};
+
 export function ProductCatalog({ categories, initialProducts, totalProducts, onProductClick }: Props) {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [total, setTotal] = useState(totalProducts);
@@ -140,24 +167,30 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
     <section id="produk" className="py-16 lg:py-24 bg-white">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-10">
-          <Badge variant="secondary" className="bg-teal-50 text-teal-700 mb-3">
+        <motion.div
+          className="text-center mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <Badge variant="secondary" className="bg-teal-50 text-teal-800 mb-3">
             Katalog Produk
           </Badge>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Semua <span className="text-teal-700">Produk</span> Kami
+            Semua <span className="text-teal-800">Produk</span> Kami
           </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Jelajahi koleksi lengkap produk pendingin berkualitas tinggi.
             Gunakan filter untuk menemukan produk yang Anda butuhkan.
           </p>
-        </div>
+        </motion.div>
 
         {/* Search & Filter Bar */}
         <div className="mb-8 space-y-4">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
               <Input
                 placeholder="Cari produk, brand, atau model..."
                 value={search}
@@ -166,7 +199,7 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
               />
               {search && (
                 <button
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   onClick={() => { setSearch(''); setPage(1); }}
                 >
                   <X className="h-4 w-4" />
@@ -212,30 +245,30 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2 flex-wrap">
               {category !== 'all' && (
-                <Badge variant="secondary" className="bg-teal-50 text-teal-700 gap-1">
+                <Badge variant="secondary" className="bg-teal-50 text-teal-800 gap-1">
                   {categories.find(c => c.slug === category)?.name}
                   <button onClick={() => setCategory('all')}><X className="h-3 w-3" /></button>
                 </Badge>
               )}
               {search && (
-                <Badge variant="secondary" className="gap-1">
+                <Badge variant="secondary" className="text-gray-800 gap-1">
                   &quot;{search}&quot;
                   <button onClick={() => { setSearch(''); setPage(1); }}><X className="h-3 w-3" /></button>
                 </Badge>
               )}
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-500">{total} produk</span>
+              <span className="text-sm text-gray-600">{total} produk</span>
               <div className="hidden sm:flex items-center gap-1 border rounded-lg p-0.5">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-teal-100 text-teal-700' : 'text-gray-400 hover:text-gray-600'}`}
+                  className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-teal-100 text-teal-800' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                   <Grid3X3 className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-teal-100 text-teal-700' : 'text-gray-400 hover:text-gray-600'}`}
+                  className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-teal-100 text-teal-800' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                   <List className="h-4 w-4" />
                 </button>
@@ -247,18 +280,26 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
         {/* Products Grid/List */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <Loader2 className="h-8 w-8 animate-spin text-teal-600" />
-            <p className="text-sm text-gray-500">Memuat produk...</p>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+            >
+              <Loader2 className="h-10 w-10 text-teal-600" />
+            </motion.div>
+            <p className="text-sm text-gray-600">Memuat produk...</p>
           </div>
         ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <PackageSearch className="h-12 w-12 text-gray-300" />
-            <p className="text-gray-500 font-medium">Produk tidak ditemukan</p>
-            <p className="text-sm text-gray-400">Coba ubah filter atau kata kunci pencarian Anda.</p>
+            <p className="text-gray-700 font-medium">Produk tidak ditemukan</p>
+            <p className="text-sm text-gray-500">Coba ubah filter atau kata kunci pencarian Anda.</p>
           </div>
         ) : viewMode === 'grid' ? (
           <motion.div
             layout
+            variants={gridContainerVariants}
+            initial="hidden"
+            animate="visible"
             className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5"
           >
             <AnimatePresence mode="popLayout">
@@ -273,7 +314,13 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
             </AnimatePresence>
           </motion.div>
         ) : (
-          <motion.div layout className="space-y-3">
+          <motion.div
+            layout
+            variants={gridContainerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-3"
+          >
             <AnimatePresence mode="popLayout">
               {products.map((product) => (
                 <ProductCardList
@@ -306,7 +353,7 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
                 const showEllipsis = prev !== undefined && p - prev > 1;
                 return (
                   <span key={p} className="flex items-center gap-2">
-                    {showEllipsis && <span className="text-gray-400">...</span>}
+                    {showEllipsis && <span className="text-gray-500">...</span>}
                     <Button
                       variant={page === p ? 'default' : 'outline'}
                       size="icon"
@@ -342,10 +389,8 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
+      variants={gridItemVariants}
+      whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
     >
       <Card
         className="group cursor-pointer border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-all duration-300 overflow-hidden h-full"
@@ -371,7 +416,11 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
               </Badge>
             )}
           </div>
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+          <motion.div
+            className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center gap-2"
+            initial={{ opacity: 0 }}
+            whileHover={{ opacity: 1 }}
+          >
             <Button
               size="icon"
               variant="secondary"
@@ -387,11 +436,11 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
             >
               <ShoppingCart className="h-4 w-4" />
             </Button>
-          </div>
+          </motion.div>
         </div>
         <CardContent className="p-3">
           {product.brand && (
-            <p className="text-[10px] font-semibold text-teal-600 mb-0.5 uppercase tracking-wider">
+            <p className="text-[10px] font-semibold text-teal-700 mb-0.5 uppercase tracking-wider">
               {product.brand}
             </p>
           )}
@@ -399,14 +448,14 @@ function ProductCardGrid({ product, onClick, onAddToCart }: {
             {product.name}
           </h3>
           {product.category && (
-            <p className="text-[10px] text-gray-400 mb-1.5">{product.category.name}</p>
+            <p className="text-[10px] text-gray-600 mb-1.5">{product.category.name}</p>
           )}
           <div className="flex items-baseline gap-1.5">
-            <span className="text-sm font-bold text-teal-700">
+            <span className="text-sm font-bold text-teal-800">
               {formatRupiah(product.price)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[10px] text-gray-400 line-through">
+              <span className="text-[10px] text-gray-500 line-through">
                 {formatRupiah(product.originalPrice)}
               </span>
             )}
@@ -425,12 +474,11 @@ function ProductCardList({ product, onClick, onAddToCart }: {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
+      variants={listItemVariants}
+      whileHover={{ y: -3, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
     >
       <Card
-        className="group cursor-pointer border border-gray-200 hover:border-teal-300 hover:shadow-lg transition-all duration-300"
+        className="group cursor-pointer border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-all duration-300"
         onClick={onClick}
       >
         <CardContent className="p-4 flex gap-4">
@@ -449,12 +497,12 @@ function ProductCardList({ product, onClick, onAddToCart }: {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 {product.brand && (
-                  <span className="text-[10px] font-semibold text-teal-600 uppercase tracking-wider">
+                  <span className="text-[10px] font-semibold text-teal-700 uppercase tracking-wider">
                     {product.brand}
                   </span>
                 )}
                 {product.category && (
-                  <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-gray-700">
                     {product.category.name}
                   </Badge>
                 )}
@@ -463,18 +511,18 @@ function ProductCardList({ product, onClick, onAddToCart }: {
                 {product.name}
               </h3>
               {product.shortDesc && (
-                <p className="text-xs text-gray-400 mt-1 line-clamp-2 hidden sm:block">
+                <p className="text-xs text-gray-500 mt-1 line-clamp-2 hidden sm:block">
                   {product.shortDesc}
                 </p>
               )}
             </div>
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-baseline gap-2">
-                <span className="text-base font-bold text-teal-700">
+                <span className="text-base font-bold text-teal-800">
                   {formatRupiah(product.price)}
                 </span>
                 {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="text-xs text-gray-400 line-through">
+                  <span className="text-xs text-gray-500 line-through">
                     {formatRupiah(product.originalPrice)}
                   </span>
                 )}
