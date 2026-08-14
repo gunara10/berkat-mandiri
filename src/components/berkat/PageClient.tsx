@@ -4,14 +4,19 @@ import { useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { Header } from './Header';
 import { Hero } from './Hero';
+import { AboutSection } from './AboutSection';
 import { CategoryGrid } from './CategoryGrid';
 import { FeaturedProducts } from './FeaturedProducts';
+import { PromoBanner } from './PromoBanner';
 import { WhyChooseUs } from './WhyChooseUs';
+import { BrandPartners } from './BrandPartners';
 import { Testimonials } from './Testimonials';
+import { GallerySection } from './GallerySection';
 import { ProductCatalog } from './ProductCatalog';
 import { ProductDetailModal } from './ProductDetailModal';
 import { CartDrawer } from './CartDrawer';
 import { ContactSection } from './ContactSection';
+import { ServiceCoverage } from './ServiceCoverage';
 import { Footer } from './Footer';
 import { WhatsAppButton } from './WhatsAppButton';
 import type { Category, Testimonial as TestimonialType } from '@prisma/client';
@@ -57,12 +62,15 @@ export function PageClient({
       <Header />
       <main className="flex-1">
         <Hero />
+        <AboutSection />
         <CategoryGrid categories={categories} />
         <FeaturedProducts
           products={featuredProducts}
           onProductClick={handleProductClick}
         />
+        <PromoBanner />
         <WhyChooseUs />
+        <BrandPartners />
         <ProductCatalog
           categories={categories}
           initialProducts={allProducts}
@@ -70,7 +78,9 @@ export function PageClient({
           onProductClick={handleProductClick}
         />
         <Testimonials testimonials={testimonials} />
+        <GallerySection />
         <ContactSection />
+        <ServiceCoverage />
       </main>
       <Footer />\n      <WhatsAppButton />
       <CartDrawer />\n      <ProductDetailModal

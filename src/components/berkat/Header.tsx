@@ -11,6 +11,11 @@ import {
   ShoppingCart,
   Phone,
   Snowflake,
+  Search,
+  Instagram,
+  Facebook,
+  Linkedin,
+  X,
 } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
 
@@ -26,6 +31,8 @@ const navItems = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchExpanded, setSearchExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const totalItems = useCartStore((s) => s.getTotalItems());
   const openCart = useCartStore((s) => s.openCart);
 
@@ -57,7 +64,35 @@ export function Header() {
               WhatsApp: +62 813-5000-3423
             </span>
           </div>
-          <span className="hidden sm:block text-teal-200">Pengiriman Seluruh Indonesia</span>
+          <div className="hidden sm:flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.15, y: -1 }}
+                className="hover:text-teal-200 transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="h-3 w-3" />
+              </motion.a>
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.15, y: -1 }}
+                className="hover:text-teal-200 transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-3 w-3" />
+              </motion.a>
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.15, y: -1 }}
+                className="hover:text-teal-200 transition-colors"
+                aria-label="Linkedin"
+              >
+                <Linkedin className="h-3 w-3" />
+              </motion.a>
+            </div>
+            <span className="text-teal-200">Pengiriman Seluruh Indonesia</span>
+          </div>
         </div>
       </div>
       {/* Main header */}
@@ -123,6 +158,56 @@ export function Header() {
                   Hubungi Kami
                 </Button>
               </motion.div>
+
+              {/* Search - Desktop: expandable input, Mobile: scroll to #produk */}
+              <div className="flex items-center">
+                <motion.div
+                  className="hidden md:flex items-center"
+                  animate={{
+                    width: searchExpanded ? 200 : 36,
+                  }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                >
+                  <div className="relative w-full">
+                    {searchExpanded && (
+                      <motion.input
+                        initial={{ opacity: 0, width: 0 }}
+                        animate={{ opacity: 1, width: '100%' }}
+                        exit={{ opacity: 0, width: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        type="text"
+                        placeholder="Cari produk..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="absolute right-8 top-1/2 -translate-y-1/2 h-8 w-full text-sm rounded-lg border border-gray-200 bg-gray-50 px-3 pr-2 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent"
+                        autoFocus
+                      />
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="relative z-10 h-9 w-9"
+                      onClick={() => setSearchExpanded(!searchExpanded)}
+                      aria-label="Cari"
+                    >
+                      {searchExpanded ? (
+                        <X className="h-4 w-4 text-gray-500" />
+                      ) : (
+                        <Search className="h-4 w-4 text-gray-600" />
+                      )}
+                    </Button>
+                  </div>
+                </motion.div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden h-9 w-9"
+                  onClick={() => scrollToSection('#produk')}
+                  aria-label="Cari produk"
+                >
+                  <Search className="h-4 w-4 text-gray-600" />
+                </Button>
+              </div>
 
               <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}>
                 <Button

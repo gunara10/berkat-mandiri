@@ -88,12 +88,32 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
+  const [brand, setBrand] = useState('all');
+  const [brands, setBrands] = useState<string[]>([]);
   const [sort, setSort] = useState('newest');
   const [page, setPage] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const searchTimer = useRef<NodeJS.Timeout>();
   const addItem = useCartStore((s) => s.addItem);
+
+  // Fetch available brands on mount
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const params = new URLSearchParams({ brandsOnly: 'true' });
+        if (category !== 'all') params.set('category', category);
+        const res = await fetch(`/api/products?${params}`);
+        const data = await res.json();
+        if (data.brands) {
+          setBrands(data.brands);
+        }
+      } catch {
+        // Silently ignore brand fetch errors
+      }
+    };
+    fetchBrands();
+  }, [category]);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -104,20 +124,21 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
         sort,
       });
       if (category !== 'all') params.set('category', category);
+      if (brand !== 'all') params.set('brand', brand);
       if (search.trim()) params.set('search', search.trim());
 
       const res = await fetch(`/api/products?${params}`);
       const data = await res.json();
-      if (data.success) {
+      if (data.products) {
         setProducts(data.products);
-        setTotal(data.total);
+        setTotal(data.pagination?.total ?? data.products.length);
       }
     } catch {
       toast.error('Gagal memuat produk');
     } finally {
       setLoading(false);
     }
-  }, [page, sort, category, search]);
+  }, [page, sort, category, brand, search]);
 
   useEffect(() => {
     fetchProducts();
@@ -127,6 +148,7 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
     const handler = (e: Event) => {
       const slug = (e as CustomEvent).detail;
       setCategory(slug);
+      setBrand('all');
       setPage(1);
     };
     window.addEventListener('filter-category', handler);
@@ -141,6 +163,12 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
 
   const handleCategoryChange = (val: string) => {
     setCategory(val);
+    setBrand('all');
+    setPage(1);
+  };
+
+  const handleBrandChange = (val: string) => {
+    setBrand(val);
     setPage(1);
   };
 
@@ -226,6 +254,7 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
                 <div className="flex gap-2">
                   <div className="w-full sm:w-48 h-11 rounded-md border border-input bg-gray-100 animate-pulse" />
                   <div className="w-full sm:w-44 h-11 rounded-md border border-input bg-gray-100 animate-pulse" />
+                  <div className="w-full sm:w-44 h-11 rounded-md border border-input bg-gray-100 animate-pulse" />
                 </div>
               }>
                 <Select value={category} onValueChange={handleCategoryChange}>
@@ -237,6 +266,19 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
                     {categories.map((c) => (
                       <SelectItem key={c.id} value={c.slug}>
                         {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={brand} onValueChange={handleBrandChange} disabled={brands.length === 0}>
+                  <SelectTrigger className="w-full sm:w-44 h-11">
+                    <SelectValue placeholder="Semua Brand" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Semua Brand</SelectItem>
+                    {brands.map((b) => (
+                      <SelectItem key={b} value={b}>
+                        {b}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -262,6 +304,12 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
                 <Badge variant="secondary" className="bg-teal-100 text-teal-800 font-semibold gap-1">
                   {categories.find(c => c.slug === category)?.name}
                   <button onClick={() => setCategory('all')}><X className="h-3 w-3" /></button>
+                </Badge>
+              )}
+              {brand !== 'all' && (
+                <Badge variant="secondary" className="bg-emerald-100 text-emerald-800 font-semibold gap-1">
+                  {brand}
+                  <button onClick={() => setBrand('all')}><X className="h-3 w-3" /></button>
                 </Badge>
               )}
               {search && (
@@ -316,7 +364,7 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
             <Button
               variant="outline"
               className="mt-2 border-teal-300 text-teal-800 hover:bg-teal-50"
-              onClick={() => { setSearch(''); setCategory('all'); setPage(1); }}
+              onClick={() => { setSearch(''); setCategory('all'); setBrand('all'); setPage(1); }}
             >
               Reset Filter
             </Button>

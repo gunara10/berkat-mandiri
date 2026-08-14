@@ -7,12 +7,14 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
 
     const category = searchParams.get('category')
+    const brand = searchParams.get('brand')
     const search = searchParams.get('search')
     const sort = searchParams.get('sort') || 'newest'
     const featured = searchParams.get('featured')
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10))
     const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '12', 10)))
     const viewId = searchParams.get('view')
+    const brandsOnly = searchParams.get('brandsOnly') === 'true'
 
     // Increment view count if view=id is provided
     if (viewId) {
@@ -31,6 +33,10 @@ export async function GET(request: NextRequest) {
 
     if (category) {
       where.category = { slug: category }
+    }
+
+    if (brand) {
+      where.brand = brand
     }
 
     if (search) {
@@ -66,6 +72,20 @@ export async function GET(request: NextRequest) {
     }
 
     const skip = (page - 1) * limit
+
+    // Return only distinct brands if brandsOnly=true
+    if (brandsOnly) {
+      const brandResults = await db.product.findMany({
+        where,
+        select: { brand: true },
+        distinct: ['brand'],
+        orderBy: { brand: 'asc' },
+      })
+      const brands = brandResults
+        .map((r) => r.brand)
+        .filter(Boolean) as string[]
+      return NextResponse.json({ brands })
+    }
 
     const [products, total] = await Promise.all([
       db.product.findMany({

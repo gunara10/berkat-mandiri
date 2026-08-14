@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Snowflake, Phone, Mail, MapPin, ArrowUp } from 'lucide-react';
+import { Snowflake, Phone, Mail, MapPin, ArrowUp, Instagram, Facebook, Linkedin, Youtube } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
@@ -22,6 +22,15 @@ const categories = [
   'Spare Part AC',
   'Chiller & VRV/VRF',
   'Mesin Pendingin',
+];
+
+const layananLinks = [
+  'Instalasi AC',
+  'Service AC',
+  'Isi Freon',
+  'Bongkar Pasang AC',
+  'Cuci AC',
+  'Konsultasi Proyek',
 ];
 
 const brands = [
@@ -121,7 +130,7 @@ export function Footer() {
         animate={isInView ? 'visible' : 'hidden'}
         className="container mx-auto px-4 py-12"
       >
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
           {/* Company Info */}
           <motion.div variants={itemVariants} className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
@@ -154,10 +163,84 @@ export function Footer() {
                 <Mail className="h-3.5 w-3.5 text-teal-400 shrink-0" />
                 <span>info@berkatmandiripendingin.com</span>
               </a>
+              {/* Branch Offices */}
+              <a href="#kontak" className="flex items-start gap-2 text-gray-400 hover:text-white transition-colors">
+                <MapPin className="h-3.5 w-3.5 mt-0.5 text-teal-400 shrink-0" />
+                <span>Cabang Jakarta: Jl. Mangga Dua Raya No. 45, Jakarta Utara 14430</span>
+              </a>
+              <a href="#kontak" className="flex items-start gap-2 text-gray-400 hover:text-white transition-colors">
+                <MapPin className="h-3.5 w-3.5 mt-0.5 text-teal-400 shrink-0" />
+                <span>Cabang Surabaya: Jl. Rungkut Industri No. 12, Surabaya 60293</span>
+              </a>
+            </div>
+            {/* Social Media Links */}
+            <div className="flex items-center gap-2 mt-4">
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.2, y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 rounded-full bg-gray-800 hover:bg-teal-600 flex items-center justify-center text-gray-400 hover:text-white transition-all"
+                aria-label="Instagram"
+              >
+                <Instagram className="h-3.5 w-3.5" />
+              </motion.a>
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.2, y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 rounded-full bg-gray-800 hover:bg-teal-600 flex items-center justify-center text-gray-400 hover:text-white transition-all"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-3.5 w-3.5" />
+              </motion.a>
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.2, y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 rounded-full bg-gray-800 hover:bg-teal-600 flex items-center justify-center text-gray-400 hover:text-white transition-all"
+                aria-label="Linkedin"
+              >
+                <Linkedin className="h-3.5 w-3.5" />
+              </motion.a>
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.2, y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 rounded-full bg-gray-800 hover:bg-teal-600 flex items-center justify-center text-gray-400 hover:text-white transition-all"
+                aria-label="Youtube"
+              >
+                <Youtube className="h-3.5 w-3.5" />
+              </motion.a>
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.2, y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 rounded-full bg-gray-800 hover:bg-teal-600 flex items-center justify-center text-gray-400 hover:text-white transition-all"
+                aria-label="X / Twitter"
+              >
+                <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </motion.a>
             </div>
           </motion.div>
 
           {/* Quick Links */}
+          <motion.div variants={itemVariants}>
+            <h4 className="font-semibold text-white text-sm mb-4">Layanan</h4>
+            <ul className="space-y-2.5">
+              {layananLinks.map((item) => (
+                <li key={item}>
+                  <button
+                    onClick={() => scrollTo('#kontak')}
+                    className="text-sm text-gray-400 hover:text-teal-300 transition-colors"
+                  >
+                    {item}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Navigasi */}
           <motion.div variants={itemVariants}>
             <h4 className="font-semibold text-white text-sm mb-4">Navigasi</h4>
             <ul className="space-y-2.5">

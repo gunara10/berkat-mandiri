@@ -60,6 +60,30 @@ async function main() {
         image: '/images/categories/chiller.png',
         sortOrder: 6,
       },
+      {
+        name: 'Pipa & Fitting',
+        slug: 'pipa-fitting',
+        description: 'Pipa tembaga, pipa PVC, insulasi pipa, fitting, dan aksesoris perpipaan untuk instalasi AC dan sistem pendingin.',
+        sortOrder: 7,
+      },
+      {
+        name: 'Oli & Cairan',
+        slug: 'oli-cairan',
+        description: 'Oli kompresor, cairan pembersih evaporator, anti bakteri, dan cairan perawatan sistem pendingin.',
+        sortOrder: 8,
+      },
+      {
+        name: 'Aksesoris AC',
+        slug: 'aksesoris-ac',
+        description: 'Remote AC, thermostat, bracket, kapasitor, PCB board, fan motor, dan aksesoris pendukung AC lainnya.',
+        sortOrder: 9,
+      },
+      {
+        name: 'Evaporator & Kondensor',
+        slug: 'evaporator-kondensor',
+        description: 'Evaporator dan kondensor untuk berbagai tipe AC. Tersedia untuk AC split, cassette, floor standing, dan paket unit.',
+        sortOrder: 10,
+      },
     ],
   })
 
@@ -72,6 +96,10 @@ async function main() {
   const catSparePart = await db.category.findUnique({ where: { slug: 'spare-part-ac' } })!
   const catChiller = await db.category.findUnique({ where: { slug: 'chiller-vrv-vrf' } })!
   const catMesinPendingin = await db.category.findUnique({ where: { slug: 'mesin-pendingin' } })!
+  const catPipaFitting = await db.category.findUnique({ where: { slug: 'pipa-fitting' } })!
+  const catOliCairan = await db.category.findUnique({ where: { slug: 'oli-cairan' } })!
+  const catAksesoris = await db.category.findUnique({ where: { slug: 'aksesoris-ac' } })!
+  const catEvapKondensor = await db.category.findUnique({ where: { slug: 'evaporator-kondensor' } })!
 
   // =====================
   // PRODUCTS - AC Split
@@ -1438,6 +1466,256 @@ async function main() {
   console.log(`📦 Created ${productsMesinPendingin.count} Mesin Pendingin products`)
 
   // =====================
+  // PRODUCTS - Pipa & Fitting
+  // =====================
+  const productsPipaFitting = await db.product.createMany({
+    data: [
+      {
+        name: 'Pipa Tembaga 1/4" x 15m - Mueller',
+        slug: 'pipa-tembaga-1-4-mueller-15m',
+        shortDesc: 'Pipa tembaga premium Mueller 1/4 inch',
+        price: 185000,
+        originalPrice: 210000,
+        categoryId: catPipaFitting.id,
+        brand: 'Mueller',
+        model: 'MC-1/4-15',
+        inStock: true, isFeatured: true, isNew: false, minOrder: 1, unit: 'batang',
+      },
+      {
+        name: 'Pipa Tembaga 3/8" x 15m - Hoda',
+        slug: 'pipa-tembaga-3-8-hoda-15m',
+        shortDesc: 'Pipa tembaga Hoda 3/8 inch kualitas terbaik',
+        price: 285000,
+        originalPrice: 320000,
+        categoryId: catPipaFitting.id,
+        brand: 'Hoda',
+        model: 'HD-3/8-15',
+        inStock: true, isFeatured: true, isNew: false, minOrder: 1, unit: 'batang',
+      },
+      {
+        name: 'Pipa Tembaga 1/2" x 15m - Mueller',
+        slug: 'pipa-tembaga-1-2-mueller-15m',
+        shortDesc: 'Pipa tembaga Mueller 1/2 inch untuk AC 2-3 PK',
+        price: 450000,
+        categoryId: catPipaFitting.id,
+        brand: 'Mueller',
+        model: 'MC-1/2-15',
+        inStock: true, isFeatured: false, isNew: false, minOrder: 1, unit: 'batang',
+      },
+      {
+        name: 'Insulasi Pipa AC 1/4" x 10m - Insulflex',
+        slug: 'insulasi-pipa-1-4-insulflex-10m',
+        shortDesc: 'Insulasi pipa AC Insulflex 1/4 inch',
+        price: 45000,
+        categoryId: catPipaFitting.id,
+        brand: 'Insulflex',
+        model: 'IF-1/4-10',
+        inStock: true, isFeatured: false, isNew: false, minOrder: 1, unit: 'batang',
+      },
+      {
+        name: 'Insulasi Pipa AC 3/8" x 10m - M-Flex',
+        slug: 'insulasi-pipa-3-8-mflex-10m',
+        shortDesc: 'Insulasi pipa M-Flex 3/8 inch berkualitas tinggi',
+        price: 65000,
+        categoryId: catPipaFitting.id,
+        brand: 'M-Flex',
+        model: 'MF-3/8-10',
+        inStock: true, isFeatured: false, isNew: false, minOrder: 1, unit: 'batang',
+      },
+      {
+        name: 'Fitting Elbow 90° 1/4" Tembaga',
+        slug: 'fitting-elbow-90-1-4-tembaga',
+        shortDesc: 'Elbow siku 90 derajat pipa tembaga 1/4"',
+        price: 12000,
+        categoryId: catPipaFitting.id,
+        brand: 'Mueller',
+        inStock: true, isFeatured: false, isNew: false, minOrder: 10, unit: 'pcs',
+      },
+    ],
+  })
+  console.log(`📦 Created ${productsPipaFitting.count} Pipa & Fitting products`)
+
+  // =====================
+  // PRODUCTS - Oli & Cairan
+  // =====================
+  const productsOliCairan = await db.product.createMany({
+    data: [
+      {
+        name: 'Oli Kompresor Emkarate RL68H - 1 Liter',
+        slug: 'oli-kompresor-emkarate-rl68h-1l',
+        shortDesc: 'Oli kompresor Emkarate RL68H untuk semua merek',
+        price: 285000,
+        originalPrice: 320000,
+        categoryId: catOliCairan.id,
+        brand: 'Emkarate',
+        model: 'RL68H-1L',
+        inStock: true, isFeatured: true, isNew: false, minOrder: 1, unit: 'botol',
+      },
+      {
+        name: 'Oli Kompresor Suniso 4GS - 1 Liter',
+        slug: 'oli-kompresor-suniso-4gs-1l',
+        shortDesc: 'Oli kompresor Suniso 4GS mineral',
+        price: 195000,
+        categoryId: catOliCairan.id,
+        brand: 'Suniso',
+        model: '4GS-1L',
+        inStock: true, isFeatured: false, isNew: false, minOrder: 1, unit: 'botol',
+      },
+      {
+        name: 'Cairan Pembersih Evaporator 500ml',
+        slug: 'cairan-pembersih-evaporator-500ml',
+        shortDesc: 'Cairan pembersih coil evaporator AC',
+        price: 75000,
+        categoryId: catOliCairan.id,
+        brand: 'Berkat Mandiri',
+        inStock: true, isFeatured: false, isNew: true, minOrder: 1, unit: 'botol',
+      },
+      {
+        name: 'Anti Bakteri AC - 1 Liter',
+        slug: 'anti-bakteri-ac-1l',
+        shortDesc: 'Cairan anti bakteri untuk evaporator AC',
+        price: 125000,
+        categoryId: catOliCairan.id,
+        brand: 'Chemours',
+        inStock: true, isFeatured: false, isNew: true, minOrder: 1, unit: 'botol',
+      },
+      {
+        name: 'Oli Kompresor Copeland Zerol - 5 Liter',
+        slug: 'oli-kompresor-copeland-zerol-5l',
+        shortDesc: 'Oli kompresor Copeland Zerol POE 5 liter',
+        price: 1450000,
+        originalPrice: 1650000,
+        categoryId: catOliCairan.id,
+        brand: 'Copeland',
+        model: 'ZEROL-5L',
+        inStock: true, isFeatured: true, isNew: false, minOrder: 1, unit: 'galon',
+      },
+    ],
+  })
+  console.log(`📦 Created ${productsOliCairan.count} Oli & Cairan products`)
+
+  // =====================
+  // PRODUCTS - Aksesoris AC
+  // =====================
+  const productsAksesoris = await db.product.createMany({
+    data: [
+      {
+        name: 'Remote AC Daikin Universal',
+        slug: 'remote-ac-daikin-wireless',
+        shortDesc: 'Remote AC Daikin universal untuk semua tipe',
+        price: 85000,
+        categoryId: catAksesoris.id,
+        brand: 'Daikin',
+        inStock: true, isFeatured: true, isNew: false, minOrder: 1, unit: 'pcs',
+      },
+      {
+        name: 'Kapasitor AC 35µF 450VAC',
+        slug: 'kapasitor-ac-45uf-400vac-sharp',
+        shortDesc: 'Kapasitor AC 45 microfarad 400VAC',
+        price: 75000,
+        categoryId: catAksesoris.id,
+        brand: 'Sharp',
+        inStock: true, isFeatured: false, isNew: false, minOrder: 1, unit: 'pcs',
+      },
+      {
+        name: 'Thermostat Digital AC Universal',
+        slug: 'thermostat-wifi-smart-ac',
+        shortDesc: 'Thermostat WiFi smart untuk AC',
+        price: 185000,
+        categoryId: catAksesoris.id,
+        brand: 'Berkat Mandiri',
+        inStock: true, isFeatured: false, isNew: true, minOrder: 1, unit: 'pcs',
+      },
+      {
+        name: 'Bracket AC Outdoor 1-2 PK',
+        slug: 'bracket-ac-outdoor-stainless-1-2pk',
+        shortDesc: 'Bracket outdoor AC stainless steel 1-2 PK',
+        price: 145000,
+        categoryId: catAksesoris.id,
+        brand: 'Berkat Mandiri',
+        inStock: true, isFeatured: false, isNew: false, minOrder: 1, unit: 'set',
+      },
+      {
+        name: 'Fan Motor Indoor AC 0.5-1 PK',
+        slug: 'fan-motor-indoor-panasonic-0-5-1pk',
+        shortDesc: 'Fan motor indoor AC Panasonic 0.5-1 PK',
+        price: 165000,
+        categoryId: catAksesoris.id,
+        brand: 'Panasonic',
+        inStock: true, isFeatured: false, isNew: false, minOrder: 1, unit: 'pcs',
+      },
+      {
+        name: 'PCB Board AC Split Universal',
+        slug: 'pcb-board-ac-split-lg-original',
+        shortDesc: 'PCB board AC split untuk berbagai merek',
+        price: 275000,
+        originalPrice: 320000,
+        categoryId: catAksesoris.id,
+        brand: 'LG',
+        inStock: true, isFeatured: true, isNew: false, minOrder: 1, unit: 'pcs',
+      },
+    ],
+  })
+  console.log(`📦 Created ${productsAksesoris.count} Aksesoris AC products`)
+
+  // =====================
+  // PRODUCTS - Evaporator & Kondensor
+  // =====================
+  const productsEvapKondensor = await db.product.createMany({
+    data: [
+      {
+        name: 'Evaporator AC Split 1.5 PK Daikin',
+        slug: 'evaporator-ac-split-1-5pk-daikin',
+        shortDesc: 'Evaporator indoor unit AC Daikin 1.5 PK',
+        price: 850000,
+        originalPrice: 950000,
+        categoryId: catEvapKondensor.id,
+        brand: 'Daikin',
+        inStock: true, isFeatured: true, isNew: false, minOrder: 1, unit: 'unit',
+      },
+      {
+        name: 'Kondensor AC Split 2 PK Panasonic',
+        slug: 'kondensor-ac-split-2pk-panasonic',
+        shortDesc: 'Kondensor outdoor unit AC Panasonic 2 PK',
+        price: 1250000,
+        originalPrice: 1400000,
+        categoryId: catEvapKondensor.id,
+        brand: 'Panasonic',
+        inStock: true, isFeatured: false, isNew: false, minOrder: 1, unit: 'unit',
+      },
+      {
+        name: 'Evaporator AC Cassette 4 Way Daikin',
+        slug: 'evaporator-ac-cassette-4way-daikin',
+        shortDesc: 'Evaporator cassette 4 way Daikin',
+        price: 3200000,
+        categoryId: catEvapKondensor.id,
+        brand: 'Daikin',
+        inStock: true, isFeatured: true, isNew: true, minOrder: 1, unit: 'unit',
+      },
+      {
+        name: 'Kondensor AC Split 1 PK LG',
+        slug: 'kondensor-ac-split-1pk-lg',
+        shortDesc: 'Kondensor outdoor LG 1 PK original',
+        price: 750000,
+        categoryId: catEvapKondensor.id,
+        brand: 'LG',
+        inStock: true, isFeatured: false, isNew: false, minOrder: 1, unit: 'unit',
+      },
+      {
+        name: 'Evaporator Floor Standing 5 PK Samsung',
+        slug: 'evaporator-floor-standing-5pk-samsung',
+        shortDesc: 'Evaporator floor standing Samsung 5 PK',
+        price: 4500000,
+        originalPrice: 5000000,
+        categoryId: catEvapKondensor.id,
+        brand: 'Samsung',
+        inStock: true, isFeatured: false, isNew: true, minOrder: 1, unit: 'unit',
+      },
+    ],
+  })
+  console.log(`📦 Created ${productsEvapKondensor.count} Evaporator & Kondensor products`)
+
+  // =====================
   // TESTIMONIALS
   // =====================
   const testimonials = await db.testimonial.createMany({
@@ -1511,12 +1789,12 @@ async function main() {
   console.log(`📦 Created ${testimonials.count} testimonials`)
 
   // Summary
-  const totalProducts = productsAcSplit.count + productsKompresor.count + productsRefrigerant.count + productsSparePart.count + productsChiller.count + productsMesinPendingin.count
+  const totalProducts = productsAcSplit.count + productsKompresor.count + productsRefrigerant.count + productsSparePart.count + productsChiller.count + productsMesinPendingin.count + productsPipaFitting.count + productsOliCairan.count + productsAksesoris.count + productsEvapKondensor.count
   console.log(`
 ============================================
 ✅ Seeding completed successfully!
 ============================================
-Categories:     6
+Categories:     10
 Products:       ${totalProducts}
   - AC Split:         ${productsAcSplit.count}
   - Kompresor:        ${productsKompresor.count}
@@ -1524,6 +1802,10 @@ Products:       ${totalProducts}
   - Spare Part AC:    ${productsSparePart.count}
   - Chiller & VRV/VRF:${productsChiller.count}
   - Mesin Pendingin:  ${productsMesinPendingin.count}
+  - Pipa & Fitting:   ${productsPipaFitting.count}
+  - Oli & Cairan:     ${productsOliCairan.count}
+  - Aksesoris AC:     ${productsAksesoris.count}
+  - Evaporator & Kondensor: ${productsEvapKondensor.count}
 Testimonials:   ${testimonials.count}
 ============================================
   `)
