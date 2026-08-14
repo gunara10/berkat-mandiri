@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,14 +24,19 @@ import {
   PackageSearch,
   Grid3X3,
   List,
-  Loader2,
   Sparkles,
 } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
 import { NoSSR } from '@/components/ui/no-ssr';
-import type { Category } from '@prisma/client';
+
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  _count?: { products: number };
+};
 
 type Product = {
   id: string;
@@ -48,8 +53,7 @@ type Product = {
 
 interface Props {
   categories: Category[];
-  initialProducts: Product[];
-  totalProducts: number;
+  allProducts: Product[];
   onProductClick: (product: Product) => void;
 }
 
@@ -82,68 +86,77 @@ const listItemVariants = {
   },
 };
 
-export function ProductCatalog({ categories, initialProducts, totalProducts, onProductClick }: Props) {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [total, setTotal] = useState(totalProducts);
-  const [loading, setLoading] = useState(false);
+export function ProductCatalog({ categories, allProducts, onProductClick }: Props) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [brand, setBrand] = useState('all');
-  const [brands, setBrands] = useState<string[]>([]);
   const [sort, setSort] = useState('newest');
   const [page, setPage] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
-  const searchTimer = useRef<NodeJS.Timeout>();
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>();
   const addItem = useCartStore((s) => s.addItem);
 
-  // Fetch available brands on mount
-  useEffect(() => {
-    const fetchBrands = async () => {
-      try {
-        const params = new URLSearchParams({ brandsOnly: 'true' });
-        if (category !== 'all') params.set('category', category);
-        const res = await fetch(`/api/products?${params}`);
-        const data = await res.json();
-        if (data.brands) {
-          setBrands(data.brands);
-        }
-      } catch {
-        // Silently ignore brand fetch errors
-      }
-    };
-    fetchBrands();
-  }, [category]);
+  // Compute available brands from filtered products
+  const brands = useMemo(() => {
+    const filtered = category === 'all'
+      ? allProducts
+      : allProducts.filter((p) => p.category?.slug === category);
+    const uniqueBrands = [...new Set(filtered.map((p) => p.brand).filter(Boolean) as string[])];
+    return uniqueBrands.sort();
+  }, [allProducts, category]);
 
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: PAGE_SIZE.toString(),
-        sort,
-      });
-      if (category !== 'all') params.set('category', category);
-      if (brand !== 'all') params.set('brand', brand);
-      if (search.trim()) params.set('search', search.trim());
+  // Client-side filtering, sorting, and pagination — NO API needed!
+  const { products, total } = useMemo(() => {
+    let filtered = [...allProducts];
 
-      const res = await fetch(`/api/products?${params}`);
-      const data = await res.json();
-      if (data.products) {
-        setProducts(data.products);
-        setTotal(data.pagination?.total ?? data.products.length);
-      }
-    } catch {
-      toast.error('Gagal memuat produk');
-    } finally {
-      setLoading(false);
+    // Category filter
+    if (category !== 'all') {
+      filtered = filtered.filter((p) => p.category?.slug === category);
     }
-  }, [page, sort, category, brand, search]);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    // Brand filter
+    if (brand !== 'all') {
+      filtered = filtered.filter((p) => p.brand === brand);
+    }
 
+    // Search filter
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      filtered = filtered.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          (p.brand?.toLowerCase().includes(q)) ||
+          (p.shortDesc?.toLowerCase().includes(q)) ||
+          (p.category?.name.toLowerCase().includes(q))
+      );
+    }
+
+    // Sort
+    switch (sort) {
+      case 'name':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'price-asc':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      default: // newest — keep original order (already sorted by createdAt desc from seed)
+        break;
+    }
+
+    const total = filtered.length;
+    const start = (page - 1) * PAGE_SIZE;
+    const products = filtered.slice(start, start + PAGE_SIZE);
+
+    return { products, total };
+  }, [allProducts, category, brand, search, sort, page]);
+
+  // Reset page when category/brand/sort changes (via handlers, not effect)
+
+  // Listen for category filter events from CategoryGrid
   useEffect(() => {
     const handler = (e: Event) => {
       const slug = (e as CustomEvent).detail;
@@ -157,8 +170,8 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
 
   const handleSearch = (val: string) => {
     setSearch(val);
+    setPage(1);
     if (searchTimer.current) clearTimeout(searchTimer.current);
-    searchTimer.current = setTimeout(() => setPage(1), 400);
   };
 
   const handleCategoryChange = (val: string) => {
@@ -340,17 +353,7 @@ export function ProductCatalog({ categories, initialProducts, totalProducts, onP
         </div>
 
         {/* Products Grid/List */}
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-            >
-              <Loader2 className="h-10 w-10 text-teal-600" />
-            </motion.div>
-            <p className="text-sm text-gray-700 font-medium">Memuat produk...</p>
-          </div>
-        ) : products.length === 0 ? (
+        {products.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

@@ -14,8 +14,11 @@ import {
   Send,
   MessageCircle,
   ArrowUpRight,
+  CheckCircle2,
 } from 'lucide-react';
 import { toast } from 'sonner';
+
+const WA_NUMBER = '6281350003423';
 
 const contactInfo = [
   {
@@ -81,6 +84,7 @@ const formVariants = {
 
 export function ContactSection() {
   const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -96,23 +100,34 @@ export function ContactSection() {
       return;
     }
     setSending(true);
+
+    // Send via WhatsApp — no server/API needed!
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+      const lines = [
+        `Halo, saya ingin menghubungi Berkat Mandiri Pendingin:`,
+        ``,
+        `*Nama:* ${form.name}`,
+        form.email ? `*Email:* ${form.email}` : '',
+        form.phone ? `*Telepon:* ${form.phone}` : '',
+        form.subject ? `*Subjek:* ${form.subject}` : '',
+        ``,
+        `*Pesan:*`,
+        form.message,
+      ].filter(Boolean).join('\n');
+
+      window.open(
+        `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(lines)}`,
+        '_blank'
+      );
+
+      setSent(true);
+      toast.success('Pesan dikirim via WhatsApp!', {
+        description: 'Tim kami akan segera merespon.',
       });
-      const data = await res.json();
-      if (data.success) {
-        toast.success('Pesan berhasil dikirim!', {
-          description: 'Tim kami akan segera menghubungi Anda.',
-        });
-        setForm({ name: '', email: '', phone: '', subject: '', message: '' });
-      } else {
-        toast.error(data.error || 'Gagal mengirim pesan');
-      }
+      setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+      setTimeout(() => setSent(false), 3000);
     } catch {
-      toast.error('Terjadi kesalahan saat mengirim pesan');
+      toast.error('Gagal membuka WhatsApp');
     } finally {
       setSending(false);
     }
@@ -222,7 +237,7 @@ export function ContactSection() {
                   Kirim Pesan
                 </h3>
                 <p className="text-sm text-gray-600 mb-5">
-                  Isi formulir di bawah dan tim kami akan merespon dalam waktu 1x24 jam.
+                  Isi formulir di bawah — pesan akan dikirim langsung via WhatsApp ke tim kami.
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
@@ -283,11 +298,16 @@ export function ContactSection() {
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
                       <Button
                         type="submit"
-                        className="w-full bg-teal-600 hover:bg-teal-700 h-11 text-white font-semibold"
+                        className={`w-full h-11 text-white font-semibold ${sent ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-teal-600 hover:bg-teal-700'}`}
                         disabled={sending}
                       >
-                        {sending ? 'Mengirim...' : 'Kirim Pesan'}
-                        <Send className="h-4 w-4 ml-1.5" />
+                        {sent ? (
+                          <><CheckCircle2 className="h-4 w-4 mr-1.5" /> Terkirim!</>
+                        ) : sending ? (
+                          'Mengirim...'
+                        ) : (
+                          <><Send className="h-4 w-4 ml-1.5" /> Kirim via WhatsApp</>
+                        )}
                       </Button>
                     </motion.div>
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -298,7 +318,7 @@ export function ContactSection() {
                         onClick={() => {
                           const msg = `Halo, saya ingin bertanya tentang produk di Berkat Mandiri Pendingin.`;
                           window.open(
-                            `https://wa.me/6281350003423?text=${encodeURIComponent(msg)}`,
+                            `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,
                             '_blank'
                           );
                         }}

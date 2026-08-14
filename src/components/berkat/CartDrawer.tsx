@@ -22,12 +22,14 @@ import {
   Send,
   Package,
   ArrowRight,
-  X,
+  CheckCircle2,
 } from 'lucide-react';
 import { useCartStore, type CartItem } from '@/stores/cart-store';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/format';
 import { NoSSR } from '@/components/ui/no-ssr';
+
+const WA_NUMBER = '6281350003423';
 
 const cartItemVariants = {
   initial: { opacity: 0, x: 40, scale: 0.95 },
@@ -35,7 +37,7 @@ const cartItemVariants = {
     opacity: 1,
     x: 0,
     scale: 1,
-    transition: { type: 'spring', stiffness: 300, damping: 26 },
+    transition: { type: 'spring' as const, stiffness: 300, damping: 26 },
   },
   exit: {
     opacity: 0,
@@ -43,13 +45,14 @@ const cartItemVariants = {
     scale: 0.95,
     transition: { duration: 0.2 },
   },
-};
+} as const;
 
 export function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, clearCart, getTotal, getTotalItems } =
     useCartStore();
   const [showInquiry, setShowInquiry] = useState(false);
   const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', message: '' });
 
   const total = getTotal();
@@ -58,10 +61,10 @@ export function CartDrawer() {
   const handleWhatsAppOrder = () => {
     if (items.length === 0) return;
     const lines = items.map(
-      (item) => `• ${item.name} x${item.quantity} = ${formatRupiah(item.price * item.quantity)}`
+      (item) => `\u2022 ${item.name} x${item.quantity} = ${formatRupiah(item.price * item.quantity)}`
     );
     const msg = `Halo, saya ingin memesan:\n\n${lines.join('\n')}\n\nTotal: ${formatRupiah(total)}\n\nMohon info ketersediaan dan ongkos kirim. Terima kasih!`;
-    window.open(`https://wa.me/6281350003423?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   const handleSubmitInquiry = async () => {
@@ -70,32 +73,47 @@ export function CartDrawer() {
       return;
     }
     setSending(true);
+
+    // Send inquiry via WhatsApp — no server needed!
     try {
-      const res = await fetch('/api/inquiry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          items: items.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            notes: '',
-          })),
-        }),
+      const orderLines = items.map(
+        (item) => `  \u2022 ${item.name} x${item.quantity} = ${formatRupiah(item.price * item.quantity)}`
+      );
+
+      const lines = [
+        `Halo, saya ingin *minta penawaran harga*:`,
+        ``,
+        `*Nama:* ${form.name}`,
+        `*Email:* ${form.email}`,
+        `*Telepon:* ${form.phone}`,
+        form.company ? `*Perusahaan:* ${form.company}` : '',
+        ``,
+        `*Pesanan:*`,
+        ...orderLines,
+        ``,
+        `*Total Estimasi:* ${formatRupiah(total)}`,
+        form.message ? `*Catatan:* ${form.message}` : '',
+        ``,
+        `Mohon info ketersediaan dan harga terbaik. Terima kasih!`,
+      ].filter(Boolean).join('\n');
+
+      window.open(
+        `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(lines)}`,
+        '_blank'
+      );
+
+      setSent(true);
+      toast.success('Penawaran dikirim via WhatsApp!', {
+        description: 'Tim kami akan menghubungi Anda dalam 1x24 jam.',
       });
-      const data = await res.json();
-      if (data.success) {
-        toast.success('Permintaan penawaran berhasil dikirim!', {
-          description: 'Tim kami akan menghubungi Anda dalam 1x24 jam.',
-        });
+      setTimeout(() => {
         clearCart();
         setShowInquiry(false);
         closeCart();
-      } else {
-        toast.error(data.error || 'Gagal mengirim permintaan');
-      }
+        setSent(false);
+      }, 1500);
     } catch {
-      toast.error('Terjadi kesalahan saat mengirim permintaan');
+      toast.error('Gagal membuka WhatsApp');
     } finally {
       setSending(false);
     }
@@ -113,7 +131,7 @@ export function CartDrawer() {
             </SheetHeader>
             <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin">
               <p className="text-sm text-gray-700">
-                Lengkapi data berikut untuk mendapatkan penawaran harga terbaik dari tim kami.
+                Lengkapi data berikut. Penawaran akan dikirim via WhatsApp ke tim kami.
               </p>
               <div>
                 <label className="text-xs font-medium text-gray-700">Nama Lengkap *</label>
@@ -190,12 +208,17 @@ export function CartDrawer() {
                 Kembali
               </Button>
               <Button
-                className="flex-1 bg-teal-600 hover:bg-teal-700"
+                className={`flex-1 ${sent ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-teal-600 hover:bg-teal-700'} text-white`}
                 onClick={handleSubmitInquiry}
                 disabled={sending}
               >
-                {sending ? 'Mengirim...' : 'Kirim Penawaran'}
-                <Send className="h-4 w-4 ml-1.5" />
+                {sent ? (
+                  <><CheckCircle2 className="h-4 w-4 mr-1.5" /> Terkirim!</>
+                ) : sending ? (
+                  'Mengirim...'
+                ) : (
+                  <><Send className="h-4 w-4 mr-1.5" /> Kirim via WA</>
+                )}
               </Button>
             </div>
           </>
@@ -326,7 +349,7 @@ function CartItemRow({
       className="flex gap-3 p-3 bg-gray-50 rounded-lg"
     >
       <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center shrink-0">
-        <span className="text-lg opacity-40">❄️</span>
+        <span className="text-lg opacity-40">❄\ufe0f</span>
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start">

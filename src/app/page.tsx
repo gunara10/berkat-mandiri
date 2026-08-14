@@ -1,16 +1,15 @@
 import { db } from '@/lib/db';
 import { PageClient } from '@/components/berkat/PageClient';
 
-export const revalidate = 60;
-
 export default async function HomePage() {
-  // Fetch categories with product count
+  // Fetch ALL data at BUILD TIME — becomes static HTML
+  // No server needed at runtime!
   const categories = await db.category.findMany({
     orderBy: { sortOrder: 'asc' },
     include: { _count: { select: { products: true } } },
   });
 
-  // Fetch featured products (limited to 8)
+  // Featured products for the hero section
   const featuredProducts = await db.product.findMany({
     where: { isFeatured: true, inStock: true },
     include: { category: { select: { name: true, slug: true } } },
@@ -18,16 +17,14 @@ export default async function HomePage() {
     take: 8,
   });
 
-  // Fetch initial products for catalog (first page)
-  const totalProducts = await db.product.count({ where: { inStock: true } });
+  // ALL products — filtering/sorting/pagination happens in the browser!
   const allProducts = await db.product.findMany({
     where: { inStock: true },
     include: { category: { select: { name: true, slug: true } } },
     orderBy: { createdAt: 'desc' },
-    take: 12,
   });
 
-  // Fetch approved testimonials
+  // Approved testimonials
   const testimonials = await db.testimonial.findMany({
     where: { isApproved: true },
     orderBy: { createdAt: 'desc' },
@@ -38,7 +35,6 @@ export default async function HomePage() {
       categories={JSON.parse(JSON.stringify(categories))}
       featuredProducts={JSON.parse(JSON.stringify(featuredProducts))}
       allProducts={JSON.parse(JSON.stringify(allProducts))}
-      totalProducts={totalProducts}
       testimonials={JSON.parse(JSON.stringify(testimonials))}
     />
   );

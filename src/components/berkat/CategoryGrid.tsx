@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Snowflake, Wind, Droplets, Wrench, Building2, Factory, Layers } from 'lucide-react';
 import Image from 'next/image';
-import type { Category } from '@prisma/client';
+import type { Category } from './types';
 
 const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   'ac-split': Wind,

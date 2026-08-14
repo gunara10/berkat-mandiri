@@ -19,14 +19,52 @@ import { ContactSection } from './ContactSection';
 import { ServiceCoverage } from './ServiceCoverage';
 import { Footer } from './Footer';
 import { WhatsAppButton } from './WhatsAppButton';
-import type { Category, Testimonial as TestimonialType } from '@prisma/client';
+
+// Plain types — no Prisma dependency needed for client components
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  image?: string | null;
+  sortOrder: number;
+  _count?: { products: number };
+};
+
+type Testimonial = {
+  id: string;
+  name: string;
+  company?: string | null;
+  position?: string | null;
+  content: string;
+  rating: number;
+};
+
+type Product = {
+  id: string;
+  name: string;
+  slug?: string;
+  price: number;
+  originalPrice?: number | null;
+  shortDesc?: string | null;
+  description?: string | null;
+  brand?: string | null;
+  model?: string | null;
+  specifications?: string | null;
+  images?: string | null;
+  inStock: boolean;
+  isFeatured: boolean;
+  isNew: boolean;
+  minOrder: number;
+  unit: string;
+  category: { name: string; slug: string } | null;
+};
 
 interface Props {
-  categories: (Category & { _count: { products: number } })[];
-  featuredProducts: any[];
-  allProducts: any[];
-  totalProducts: number;
-  testimonials: TestimonialType[];
+  categories: Category[];
+  featuredProducts: Product[];
+  allProducts: Product[];
+  testimonials: Testimonial[];
 }
 
 function ScrollProgress() {
@@ -45,13 +83,12 @@ export function PageClient({
   categories,
   featuredProducts,
   allProducts,
-  totalProducts,
   testimonials,
 }: Props) {
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
-  const handleProductClick = (product: any) => {
+  const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
     setDetailOpen(true);
   };
@@ -73,8 +110,7 @@ export function PageClient({
         <BrandPartners />
         <ProductCatalog
           categories={categories}
-          initialProducts={allProducts}
-          totalProducts={totalProducts}
+          allProducts={allProducts}
           onProductClick={handleProductClick}
         />
         <Testimonials testimonials={testimonials} />
@@ -82,8 +118,10 @@ export function PageClient({
         <ContactSection />
         <ServiceCoverage />
       </main>
-      <Footer />\n      <WhatsAppButton />
-      <CartDrawer />\n      <ProductDetailModal
+      <Footer />
+      <WhatsAppButton />
+      <CartDrawer />
+      <ProductDetailModal
         product={selectedProduct}
         open={detailOpen}
         onClose={() => setDetailOpen(false)}

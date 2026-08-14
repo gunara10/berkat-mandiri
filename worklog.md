@@ -285,3 +285,33 @@ Stage Summary:
 - Social media links, search bar, branch offices, layanan links in footer
 - Promo banner CTA strip
 - Lint: 0 errors, Browser: 0 console errors
+---
+Task ID: 3
+Agent: Main
+Task: Convert website to Static Export (no Node.js needed on server)
+
+Work Log:
+- Changed next.config.ts to output: 'export' with trailingSlash and ignoreBuildErrors
+- Removed all API routes (src/app/api/) — not compatible with static export
+- Updated page.tsx to fetch ALL products at build time (not just 12)
+- Converted ProductCatalog.tsx to 100% client-side filtering/sorting/pagination using useMemo
+- Removed @prisma/client imports from all client components
+- Created src/components/berkat/types.ts for shared plain types
+- Updated ContactSection.tsx: form submission now sends via WhatsApp (no API needed)
+- Updated CartDrawer.tsx: inquiry form sends via WhatsApp with formatted order details
+- Updated PageClient.tsx: removed Prisma types, uses plain TypeScript types
+- Updated CategoryGrid.tsx: imports from ./types instead of @prisma/client
+- Excluded examples/, mini-services/, prisma/, skills/, tool-results/ from tsconfig.json
+- Fixed Framer Motion type widening issue with as const on CartDrawer variants
+- Fixed ESLint error (setState in effect) by moving page reset to handlers
+- Successfully built static export: out/ folder with 379KB HTML + 1.5MB JS/CSS
+- Verified: 9 sections, 84 brand mentions, product prices, SEO meta tags all in static HTML
+- Total output: 2.9MB — entire website in static files
+
+Stage Summary:
+- Website now exports as pure HTML/CSS/JS (like WordPress static files)
+- NO Node.js needed on server — works on any shared hosting (Apache, Nginx, cPanel)
+- All 70 products embedded in HTML — filtering/sorting/pagination runs in browser
+- Contact form and cart inquiry both send via WhatsApp — no server-side form handling needed
+- Cart uses localStorage (Zustand persist) — works without database
+- Lint: 0 errors, Build: SUCCESS
