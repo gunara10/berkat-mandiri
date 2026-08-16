@@ -151,26 +151,17 @@ export function Footer() {
               sistem pendingin gedung terlengkap di Indonesia.
             </p>
             <div className="space-y-2 text-xs">
-              <a href="#kontak" className="flex items-start gap-2 text-gray-400 hover:text-white transition-colors">
-                <MapPin className="h-3.5 w-3.5 mt-0.5 text-teal-400 shrink-0" />
-                <span>Jl. Raya Industri No. 88, Kawasan Industri MM2100, Bekasi 17520</span>
-              </a>
-              <a href="tel:081220030092" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+              <div className="flex items-center gap-2 text-gray-400">
+                <svg className="h-3.5 w-3.5 text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                <span>Encep Sihabudin</span>
+              </div>
+              <a href="tel:02122682617" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
                 <Phone className="h-3.5 w-3.5 text-teal-400 shrink-0" />
-                <span>081220030092</span>
+                <span>(021) 2268-2617</span>
               </a>
-              <a href="mailto:info@berkatmandiripendingin.com" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+              <a href="mailto:berkatmandiripendingin@gmail.com" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
                 <Mail className="h-3.5 w-3.5 text-teal-400 shrink-0" />
-                <span>info@berkatmandiripendingin.com</span>
-              </a>
-              {/* Branch Offices */}
-              <a href="#kontak" className="flex items-start gap-2 text-gray-400 hover:text-white transition-colors">
-                <MapPin className="h-3.5 w-3.5 mt-0.5 text-teal-400 shrink-0" />
-                <span>Cabang Jakarta: Jl. Mangga Dua Raya No. 45, Jakarta Utara 14430</span>
-              </a>
-              <a href="#kontak" className="flex items-start gap-2 text-gray-400 hover:text-white transition-colors">
-                <MapPin className="h-3.5 w-3.5 mt-0.5 text-teal-400 shrink-0" />
-                <span>Cabang Surabaya: Jl. Rungkut Industri No. 12, Surabaya 60293</span>
+                <span>berkatmandiripendingin@gmail.com</span>
               </a>
             </div>
             {/* Social Media Links */}
