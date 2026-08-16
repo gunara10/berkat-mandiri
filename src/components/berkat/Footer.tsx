@@ -298,7 +298,7 @@ export function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
           <p>© {new Date().getFullYear()} Berkat Mandiri Pendingin. Hak Cipta Dilindungi.</p>
           <div className="flex items-center gap-4">
-            <p>Member resmi distributor HVAC di Indonesia</p>
+            <p>Developed by PT Digital Bisnis Manajemen (DIGIMAN)</p>
             <motion.button
               onClick={scrollToTop}
               whileHover={{ scale: 1.1, y: -2 }}
