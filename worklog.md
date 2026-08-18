@@ -315,3 +315,28 @@ Stage Summary:
 - Contact form and cart inquiry both send via WhatsApp — no server-side form handling needed
 - Cart uses localStorage (Zustand persist) — works without database
 - Lint: 0 errors, Build: SUCCESS
+
+---
+Task ID: 4
+Agent: Sub-agent
+Task: Generate PRD DOCX document for Berkat Mandiri Pendingin website
+
+Work Log:
+- Read DOCX skill instructions: design-system.md (R4 Top Color Block recipe, GO-1 palette), common-rules.md (Profile A Formal), toc.md, report.md (Template F)
+- Created /home/z/my-project/output/generate-prd.js using CommonJS (require docx)
+- Cover: R4 Top Color Block recipe with GO-1 Graphite Orange palette, 3-section architecture
+- TOC: separate section with Roman numerals, auto placeholder injection via add_toc_placeholders.py
+- Body: Arabic numerals starting at 1, 11 chapters following Template F (Proposal/Feasibility Report)
+- Font: Profile A Formal — SimSun/Times New Roman body (24pt), SimHei/Times New Roman headings (32/28/26pt)
+- Body text: pure black #000000, justified, 2-char first-line indent (480 twips), 1.3x line spacing (line: 312)
+- 3 comparison tables with GO-1 table palette (headerBg D4875A, zebra striping F8F0EB)
+- All tables use WidthType.PERCENTAGE (WPS compatible), ShadingType.CLEAR, cantSplit rows
+- Post-processing: removed empty pgNumType from cover section, patched footer instrText with ROMAN/arabic format switches
+- Content: 3000+ words of substantive Indonesian-language PRD content across 11 chapters
+- Chapters: Ringkasan Eksekutif, Latar Belakang, Tujuan & Sasaran, Fitur Website (9 sections detailed), Perbandingan Teknologi (8-dimension table), Rekomendasi Solusi, Panduan Deploy, Strategi SEO, Analisis Biaya (cost table), Analisis Risiko (risk matrix), Manfaat
+
+Stage Summary:
+- Generated /home/z/my-project/output/PRD-Berkat-Mandiri-Pendingin.docx (25.2 KB)
+- postcheck.py: 0 errors, 2 warnings (blank-pages PageBreak, line-spacing expected in TOC/cover)
+- add_toc_placeholders.py: 42 headings extracted, 42 TOC placeholders inserted, outlineLvl fixed
+- All checks passed, document ready for delivery
