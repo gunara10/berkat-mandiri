@@ -1,11 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // STATIC EXPORT — generates pure HTML/CSS/JS files
-  // No Node.js needed on the server! Upload to any shared hosting.
-  output: 'export',
-
-  // Trailing slash for shared hosting compatibility (Apache/Nginx)
+  // Use the Vercel/Node runtime so Prisma can query the database at runtime.
+  // Static export cannot support the server-side Prisma client used by this app.
   trailingSlash: true,
 
   // Shared hosting friendly — no image optimization server needed
